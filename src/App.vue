@@ -5,15 +5,12 @@
   </div>
 </template>
 
-<style lang="less">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+<style lang="less" >
+*{
+  box-sizing: border-box;
+  margin: auto;
+  padding: auto;
 }
-
 .icon {
   width: 1em;
   height: 1em;
@@ -28,6 +25,6 @@ body {
 }
 
 body {
-  /* background: var(--backImage); */
+   background: var(--backImage);
 }
 </style>
