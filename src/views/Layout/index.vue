@@ -1,22 +1,5 @@
 <template>
   <div>
-    <!-- <van-row gutter="0" type="flex" justify="center">
-      <van-col span="0">
-        <svg style="font-size: 25px" class="icon" aria-hidden="true">
-          <use xlink:href="#icon-liebiao"></use>
-        </svg>
-      </van-col>
-      <van-col span="18">
-        <van-search
-          class="seach"
-          shape="round"
-          background="rgba(0, 0, 0, 0)"
-          placeholder="请输入搜索关键词"
-          @focus="$router.push('/search')"
-        />
-      </van-col>
-    </van-row> -->
-
     <div class="topNav">
       <div class="topLift">
         <svg style="font-size: 25px" class="icon" aria-hidden="true">
@@ -25,7 +8,7 @@
       </div>
       <div class="topConent">
         <span>我的</span>
-        <span>发现</span>
+        <span style="font-size: 0.38rem">发现</span>
         <span>云村</span>
         <span>视频</span>
       </div>
@@ -36,42 +19,44 @@
       </div>
     </div>
 
-    <van-swipe class="my-swipe" :autoplay="3000" indicator-color="white">
-      <van-swipe-item>1</van-swipe-item>
-      <van-swipe-item>2</van-swipe-item>
-      <van-swipe-item>3</van-swipe-item>
-      <van-swipe-item style="background-color: transparent">
-        <img
-          style="
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            padding: 10px;
-            border-radius: 19.5px;
-          "
-          src="https://ts3.cn.mm.bing.net/th?id=ORMS.521047d197b7e0981a2f8d41ba5f8a07&pid=Wdp&w=300&h=156&qlt=90&c=1&rs=1&dpr=1&p=0"
-          alt=""
-        />
+    <van-swipe class="my-swipe" :autoplay="3000" indicator-color="white" :loop="false">
+      <van-swipe-item style="background-color: transparent" v-for="obj in banner" :key="obj.targetId">
+        <img style=" width: 100%;
+                height: 100%;
+                object-fit: cover;
+                padding: 10px;
+                border-radius: 19.5px;
+              " :src="obj.pic" alt="" title="1" />
+          <span class="typeTitle">{{ obj.typeTitle }}</span>
+
       </van-swipe-item>
     </van-swipe>
   </div>
 </template>
 
-<script scoped>
+<script >
+import { bannerAPI } from '@/api'
 export default {
   name: 'Lay-out',
   data () {
     return {
-
+      banner: [] // 轮播图数据
     }
   },
-  methods: {},
+  methods: {
+    async bannerApi () {
+      const { data: res } = await bannerAPI()
+      this.banner = res.banners
+    }
+  },
   components: {},
   props: {},
   watch: {},
   computed: {},
-  created () {},
-  mounted () {}
+  created () {
+    this.bannerApi()
+  },
+  mounted () { }
 }
 </script>
 <style lang="less" scoped>
@@ -82,12 +67,13 @@ export default {
   display: flex;
   justify-content: space-between;
   align-content: center;
+
   .topConent {
     width: 65%;
     height: 100%;
     display: flex;
     justify-content: space-around;
-    font-size: 0.36rem;
+    font-size: 0.3rem;
   }
 }
 
@@ -98,9 +84,11 @@ export default {
 .van-search__content--round {
   background-color: rgb(54 125 125 / 20%);
 }
+
 /deep/.van-field__control {
   color: #fff;
 }
+
 .my-swipe .van-swipe-item {
   color: #fff;
   font-size: 0.4rem;
@@ -108,8 +96,22 @@ export default {
   text-align: center;
   background-color: #39a9ed;
 }
+
 .my-swipe .van-swipe__track .van-swipe-item {
   height: 3rem;
   background-color: transparent;
+}
+
+.typeTitle {
+  position: absolute;
+  bottom: .34rem;
+  right: .38rem;
+  height: .4rem;
+  width: 1.2rem;
+  background-color: #fff;
+  color: #000;
+  border-radius: .1rem;
+  line-height: .4rem;
+  font-size: .2rem;
 }
 </style>

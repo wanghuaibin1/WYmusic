@@ -21,7 +21,6 @@
 
 body {
   --backImage: url('https://cdn.pixabay.com/photo/2023/02/09/06/16/clouds-7778012_640.jpg') no-repeat ;
-  --backColor: pink;
 }
 
 body {

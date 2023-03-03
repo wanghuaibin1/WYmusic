@@ -28,3 +28,19 @@ export const searchAPI = params => request({
 export const searHotAPI = () => request({
   url: '/search/hot'
 })
+
+// export const bannerAPI = () => ({
+//   url: '/banner?type=2'
+// })
+/**
+ *
+ * @returns 首页轮播图
+ */
+export const bannerAPI = () => {
+  return request({
+    url: '/banner',
+    params: {
+      type: 1
+    }
+  })
+}
