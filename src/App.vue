@@ -20,11 +20,20 @@
 }
 
 body {
-  --backImage: url('https://ts1.cn.mm.bing.net/th?id=OIP-C.kJE5c2uL7he1BwdQb3-APAHaNK&w=187&h=333&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2');
+  --backImage: url('https://cdn.pixabay.com/photo/2023/02/09/06/16/clouds-7778012_640.jpg') no-repeat ;
   --backColor: pink;
 }
 
 body {
    background: var(--backImage);
+   /* 背景图垂直、水平均居中 */
+background-position: center center;
+/* 当内容高度大于图片高度时，背景图像的位置相对于viewport固定 */
+background-attachment: fixed;
+/* 让背景图基于容器大小伸缩 */
+background-size: cover;
+/* 设置背景颜色，背景图加载过程中会显示背景色 */
+background-color: #464646;
+
 }
 </style>

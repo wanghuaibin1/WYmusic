@@ -8,6 +8,14 @@ const routes = [
   {
     path: '/',
     component: () => import('@/views/Layout')
+  },
+  {
+    path: '/search',
+    component: () => import('@/components/earchPage')
+  },
+  {
+    path: '/login',
+    component: () => import('@/views/Login')
   }
 ]
 
