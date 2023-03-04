@@ -2,8 +2,10 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import { NavBar, Col, Row, Search, Swipe, SwipeItem, Icon, List, Cell } from 'vant'
+import { NavBar, Col, Row, Search, Swipe, SwipeItem, Icon, List, Cell, Grid, GridItem } from 'vant'
 
+Vue.use(Grid)
+Vue.use(GridItem)
 Vue.use(List)
 Vue.use(Search)
 Vue.use(Col)

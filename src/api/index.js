@@ -44,3 +44,11 @@ export const bannerAPI = () => {
     }
   })
 }
+/**
+ *  推荐歌单
+ * @param {*} params  limit`: 取出数量 , 默认为 30 (不支持 offset)
+ * @returns
+ */
+export const personalizedAPI = () => request({
+  url: '/personalized'
+})

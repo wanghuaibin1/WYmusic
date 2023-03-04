@@ -1,52 +1,78 @@
 <template>
   <div>
+    <!-- 顶部 -->
     <div class="topNav">
       <div class="topLift">
-        <svg style="font-size: 25px" class="icon" aria-hidden="true">
+        <svg style="font-size: .5rem" class="icon" aria-hidden="true">
           <use xlink:href="#icon-liebiao"></use>
         </svg>
       </div>
       <div class="topConent">
         <span>我的</span>
-        <span style="font-size: 0.38rem">发现</span>
+        <span style="font-size: 19px">发现</span>
         <span>云村</span>
         <span>视频</span>
       </div>
       <div class="topRight" @click="$router.push('/search')">
-        <svg style="font-size: 25px" class="icon" aria-hidden="true">
+        <svg style="font-size: .5rem" class="icon" aria-hidden="true">
           <use xlink:href="#icon-31sousuo"></use>
         </svg>
       </div>
     </div>
-
-    <van-swipe class="my-swipe" :autoplay="3000" indicator-color="white" :loop="false">
-      <van-swipe-item style="background-color: transparent" v-for="obj in banner" :key="obj.targetId">
+    <!-- 轮播图 -->
+    <van-swipe class="my-swipe" :autoplay="3000" indicator-color="white">
+      <van-swipe-item style="background-color: transparent" v-for="obj in banner" :key="obj.bannerId">
         <img style=" width: 100%;
-                height: 100%;
-                object-fit: cover;
-                padding: 10px;
-                border-radius: 19.5px;
-              " :src="obj.pic" alt="" title="1" />
-          <span class="typeTitle">{{ obj.typeTitle }}</span>
+                        height: 100%;
+                        object-fit: cover;
+                        padding: .2rem;
+                        border-radius: .39rem;
+                      " :src="obj.pic" alt="" />
+        <span class="typeTitle">{{ obj.typeTitle }}</span>
 
       </van-swipe-item>
     </van-swipe>
+    <!-- 标签导航栏 -->
+    <div class="labelBar">
+      <span class="ic" v-for="item, index in icOn" :key="index">
+        <svg style="font-size: .5rem" class="icon" aria-hidden="true">
+          <use :xlink:href=item.icXlink></use>
+        </svg>
+        <span class="sp">{{ item.name }}</span>
+      </span>
+    </div>
+    <!-- 推荐歌单 -->
+    <div>
+
+    </div>
   </div>
 </template>
 
 <script >
-import { bannerAPI } from '@/api'
+import { bannerAPI, personalizedAPI } from '@/api'
 export default {
   name: 'Lay-out',
   data () {
     return {
-      banner: [] // 轮播图数据
+      icOn: [
+        { name: '每日推荐', icXlink: '#icon-rili1' },
+        { name: '私人FM', icXlink: '#icon-sharpicons_radio' },
+        { name: '歌单', icXlink: '#icon-gedan' },
+        { name: '排行榜', icXlink: '#icon-paihangbang' },
+        { name: '数字专辑', icXlink: '#icon-zhuanji' }
+      ],
+      banner: [], // 轮播图数据
+      persoan: [] // 推荐歌单数据
     }
   },
   methods: {
     async bannerApi () {
       const { data: res } = await bannerAPI()
       this.banner = res.banners
+    },
+    async perSonalizeApi () {
+      const { data: res } = await personalizedAPI()
+      console.log(res)
     }
   },
   components: {},
@@ -55,6 +81,7 @@ export default {
   computed: {},
   created () {
     this.bannerApi()
+    this.perSonalizeApi()
   },
   mounted () { }
 }
@@ -63,7 +90,7 @@ export default {
 .topNav {
   width: 100%;
   height: 1rem;
-  padding: 10px;
+  padding: .2rem;
   display: flex;
   justify-content: space-between;
   align-content: center;
@@ -73,12 +100,12 @@ export default {
     height: 100%;
     display: flex;
     justify-content: space-around;
-    font-size: 0.3rem;
+    font-size: .3rem;
   }
 }
 
 .van-field__control {
-  border-radius: 10px;
+  border-radius: .2rem;
 }
 
 .van-search__content--round {
@@ -91,7 +118,7 @@ export default {
 
 .my-swipe .van-swipe-item {
   color: #fff;
-  font-size: 0.4rem;
+  font-size: .4rem;
   line-height: 3rem;
   text-align: center;
   background-color: #39a9ed;
@@ -114,4 +141,22 @@ export default {
   line-height: .4rem;
   font-size: .2rem;
 }
-</style>
+
+.labelBar {
+  display: flex;
+  justify-content: center;
+  margin-top: .2rem;
+
+  .ic {
+    display: flex;
+    flex-direction: column
+  }
+
+  .sp {
+    font-size: .2rem;
+    color: #d2d2d2;
+    margin-top: .2rem;
+    font-weight: 100;
+    font-family: 楷体;
+  }
+}</style>

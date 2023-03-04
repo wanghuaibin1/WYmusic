@@ -18,7 +18,7 @@
           @search="search"
           placeholder="请输入搜索关键词"
           :autofocus="true"
-          @clear="suggest=[],searchResult=[]"
+          @clear="suggest=[],searchResult=[],page = 1"
         />
       </van-col>
       <van-col>
@@ -101,6 +101,7 @@ export default {
         type: 'mobile'
       })
       this.searchResult = [] // 文本框发生改变 清空搜索结果数据
+      this.page = 1
       this.suggest = res.result.allMatch
     },
     // 搜索
@@ -134,6 +135,7 @@ export default {
       const { data: res } = await searHotAPI()
       this.hotSearch = res.result.hots
     },
+    // 热搜点击搜索
     searHotClick (e) {
       this.value = e
       this.search()
