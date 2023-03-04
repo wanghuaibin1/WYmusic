@@ -1,4 +1,5 @@
 <template>
+  <!-- 搜索组件 -->
   <div>
     <!-- 顶部搜索 -->
     <van-row gutter="0" type="flex" justify="center">

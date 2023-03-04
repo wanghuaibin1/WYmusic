@@ -33,6 +33,7 @@ background-attachment: fixed;
 background-size: cover;
 /* 设置背景颜色，背景图加载过程中会显示背景色 */
 background-color: #464646;
+font-family: 楷体;
 
 }
 </style>

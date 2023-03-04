@@ -29,9 +29,6 @@ export const searHotAPI = () => request({
   url: '/search/hot'
 })
 
-// export const bannerAPI = () => ({
-//   url: '/banner?type=2'
-// })
 /**
  *
  * @returns 首页轮播图
@@ -50,5 +47,5 @@ export const bannerAPI = () => {
  * @returns
  */
 export const personalizedAPI = () => request({
-  url: '/personalized'
+  url: '/personalized?limit=10'
 })

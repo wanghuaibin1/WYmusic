@@ -2,8 +2,9 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import { NavBar, Col, Row, Search, Swipe, SwipeItem, Icon, List, Cell, Grid, GridItem } from 'vant'
+import { NavBar, Col, Row, Search, Swipe, SwipeItem, Icon, List, Cell, Grid, GridItem, Image as VanImage, Lazyload } from 'vant'
 
+Vue.use(VanImage)
 Vue.use(Grid)
 Vue.use(GridItem)
 Vue.use(List)
@@ -15,6 +16,10 @@ Vue.use(Swipe)
 Vue.use(SwipeItem)
 Vue.use(Icon)
 Vue.use(Cell)
+Vue.use(Lazyload, {
+  lazyComponent: true
+})
+
 Vue.config.productionTip = false
 
 new Vue({

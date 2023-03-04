@@ -23,13 +23,12 @@
     <van-swipe class="my-swipe" :autoplay="3000" indicator-color="white">
       <van-swipe-item style="background-color: transparent" v-for="obj in banner" :key="obj.bannerId">
         <img style=" width: 100%;
-                        height: 100%;
-                        object-fit: cover;
-                        padding: .2rem;
-                        border-radius: .39rem;
-                      " :src="obj.pic" alt="" />
+                            height: 100%;
+                            object-fit: cover;
+                            padding: .2rem;
+                            border-radius: .39rem;
+                          " :src="obj.pic" alt="" />
         <span class="typeTitle">{{ obj.typeTitle }}</span>
-
       </van-swipe-item>
     </van-swipe>
     <!-- 标签导航栏 -->
@@ -42,14 +41,24 @@
       </span>
     </div>
     <!-- 推荐歌单 -->
-    <div>
-
+    <div class="recommend-songSheet">
+      <p class="title">推荐歌单
+        <span>
+          <svg style="font-size: .5rem" class="icon" aria-hidden="true">
+          <use xlink:href="#icon-fangxiangxia"></use>
+        </svg>
+        </span>
+      </p>
+      <div class="songFence">
+      <Song v-for="obj in persoan" :key="obj.id" :picUrl="obj.picUrl" :name="obj.name" :playCount="obj.playCount"/>
+      </div>
     </div>
   </div>
 </template>
 
 <script >
 import { bannerAPI, personalizedAPI } from '@/api'
+import Song from '@/components/SongSheet'
 export default {
   name: 'Lay-out',
   data () {
@@ -66,16 +75,20 @@ export default {
     }
   },
   methods: {
+    // 轮播图
     async bannerApi () {
       const { data: res } = await bannerAPI()
       this.banner = res.banners
     },
+    // 推荐歌单
     async perSonalizeApi () {
       const { data: res } = await personalizedAPI()
-      console.log(res)
+      this.persoan = res.result
     }
   },
-  components: {},
+  components: {
+    Song
+  },
   props: {},
   watch: {},
   computed: {},
@@ -159,4 +172,25 @@ export default {
     font-weight: 100;
     font-family: 楷体;
   }
+}
+
+.recommend-songSheet {
+  height: 4.3rem;
+  overflow: hidden;
+  .title {
+    padding: 0.266667rem 0.24rem;
+    margin: 10px 0 0 0;
+    background-color: rgba(0,0,0,0);
+    color: #ffffff;
+    font-size: 20px;
+  }
+
+  .songFence {
+    display: flex;
+    width: 100%;
+    height: 3.5rem;
+    overflow-x: auto;
+
+  }
+
 }</style>
