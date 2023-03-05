@@ -50,7 +50,7 @@
         </span>
       </p>
       <div class="songFence">
-      <Song v-for="obj in persoan" :key="obj.id" :picUrl="obj.picUrl" :name="obj.name" :playCount="obj.playCount"/>
+      <Song v-for="obj in persoan" :key="obj.id" :picUrl="obj.picUrl" :name="obj.name" :playCount="obj.playCount" :id="obj.id"/>
       </div>
     </div>
   </div>

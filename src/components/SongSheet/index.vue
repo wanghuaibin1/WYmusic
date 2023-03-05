@@ -1,6 +1,7 @@
 <template>
   <!-- 歌单组件 -->
-    <div class="songImg" >
+  <router-link :to="{path:'/itemmusic',query:{id}}" class="songImg">
+    <div  >
           <van-image width="100%" height="2.3rem" fit="cover" :src="picUrl" lazy-load>
             <template>
               <van-loading type="spinner" size="20" />
@@ -13,12 +14,13 @@
         </span>
           <p class="song_name">{{ name }}</p>
         </div>
+      </router-link>
 </template>
 
 <script>
 export default {
   name: 'Song-Sheet',
-  props: ['picUrl', 'name', 'playCount'],
+  props: ['picUrl', 'name', 'playCount', 'id'],
   data () {
     return {
     }

@@ -6,12 +6,16 @@ Vue.use(VueRouter)
 const routes = [
 
   {
-    path: '/',
+    path: '/layout',
     component: () => import('@/views/Layout')
   },
   {
     path: '/search',
     component: () => import('@/components/earchPage')
+  },
+  {
+    path: '/itemmusic',
+    component: () => import('@/components/itemMusic')
   },
   {
     path: '/login',

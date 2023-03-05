@@ -2,8 +2,11 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import { NavBar, Col, Row, Search, Swipe, SwipeItem, Icon, List, Cell, Grid, GridItem, Image as VanImage, Lazyload } from 'vant'
+import { NavBar, Col, Row, Search, Swipe, SwipeItem, Icon, List, Cell, Grid, GridItem, Image as VanImage, Lazyload, Form, Field, Button } from 'vant'
 
+Vue.use(Button)
+Vue.use(Form)
+Vue.use(Field)
 Vue.use(VanImage)
 Vue.use(Grid)
 Vue.use(GridItem)

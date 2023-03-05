@@ -49,3 +49,23 @@ export const bannerAPI = () => {
 export const personalizedAPI = () => request({
   url: '/personalized?limit=10'
 })
+
+/**
+ * 歌单详情
+ * @param {*} params 歌单id
+ * @returns
+ */
+export const datailAPI = params => request({
+  url: '/playlist/detail',
+  params
+})
+
+/**
+ * 登录
+ * @param {*} params
+ * @returns
+ */
+export const loginAPI = params => request({
+  url: '/login/cellphone',
+  params
+})

@@ -3,7 +3,7 @@
   <div>
     <!-- 顶部搜索 -->
     <van-row gutter="0" type="flex" justify="center">
-      <van-col span="0"  @click="$router.push('/')">
+      <van-col span="0"  @click="$router.push('/layout')">
         <svg style="font-size: .5rem;margin-left: .2rem;" class="icon" aria-hidden="true">
           <use xlink:href="#icon-xitongfanhui" ></use>
         </svg>
