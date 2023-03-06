@@ -15,7 +15,7 @@
       </div>
       <div class="topRight" @click="$router.push('/search')">
         <svg style="font-size: .5rem" class="icon" aria-hidden="true">
-          <use xlink:href="#icon-31sousuo"></use>
+          <use xlink:href="#icon-z31sousuo"></use>
         </svg>
       </div>
     </div>
@@ -49,8 +49,8 @@
         </svg>
         </span>
       </p>
-      <div class="songFence">
-      <Song v-for="obj in persoan" :key="obj.id" :picUrl="obj.picUrl" :name="obj.name" :playCount="obj.playCount" :id="obj.id"/>
+      <div class="songFence" v-if="w">
+      <Song  v-for="obj in persoan" :key="obj.id" :picUrl="obj.picUrl" :name="obj.name" :playCount="obj.playCount" :id="obj.id" />
       </div>
     </div>
   </div>
@@ -71,7 +71,8 @@ export default {
         { name: '数字专辑', icXlink: '#icon-zhuanji' }
       ],
       banner: [], // 轮播图数据
-      persoan: [] // 推荐歌单数据
+      persoan: [], // 推荐歌单数据
+      w: false
     }
   },
   methods: {
@@ -84,6 +85,7 @@ export default {
     async perSonalizeApi () {
       const { data: res } = await personalizedAPI()
       this.persoan = res.result
+      this.w = true
     }
   },
   components: {
@@ -157,12 +159,13 @@ export default {
 
 .labelBar {
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   margin-top: .2rem;
 
   .ic {
     display: flex;
-    flex-direction: column
+    flex-direction: column;
+    align-items: center;
   }
 
   .sp {
@@ -175,7 +178,7 @@ export default {
 }
 
 .recommend-songSheet {
-  height: 4.3rem;
+  height: 4.5rem;
   overflow: hidden;
   .title {
     padding: 0.266667rem 0.24rem;

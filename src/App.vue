@@ -8,7 +8,7 @@
 <style lang="less" >
 *{
   box-sizing: border-box;
-  margin: auto;
+  // margin: auto;
   padding: auto;
 }
 .icon {
