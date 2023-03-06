@@ -3,10 +3,6 @@
   <router-link :to="{path:'/itemmusic',query:{id}}" class="songImg">
     <div  >
           <van-image width="100%" height="2.3rem" fit="cover" :src="picUrl" lazy-load>
-            <template>
-              <van-loading type="spinner" size="20" />
-              <slot></slot>
-            </template>
           </van-image>
           <span class="playbackVolume">
           <van-icon name="play-circle-o" />
@@ -62,13 +58,13 @@ export default {
 .songImg {
   position: relative;
       width: 28%;
-      margin: 5px 10px;
+      margin: 0 .2rem;
       flex-shrink: 0;
       flex-grow: 0;
 
   /* 推荐歌单 - 歌名 */
   .song_name {
-    font-size: 10px;
+    font-size: .2rem;
     padding: 0 0.08rem;
     margin-bottom: 0.266667rem;
     word-break: break-all;

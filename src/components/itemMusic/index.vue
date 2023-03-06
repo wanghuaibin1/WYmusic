@@ -1,65 +1,75 @@
 <template>
   <div>
-    <div class="itemMusicTop">
-      <img v-if="w" :src="Singing.playlist.coverImgUrl" alt="" class="itemImg">
-      <div class="itemLeft">
-        <svg class="icon" aria-hidden="true" @click="$router.back()">
-          <use xlink:href="#icon-xitongfanhui"></use>
-        </svg>
-        <span>歌单</span>
+    <div>
+      <div class="itemMusicTop">
+        <img v-if="w" :src="Singing.playlist.coverImgUrl" alt="" class="itemImg">
+        <div class="itemLeft">
+          <svg class="icon" aria-hidden="true" @click="$router.back()">
+            <use xlink:href="#icon-xitongfanhui"></use>
+          </svg>
+          <span>歌单</span>
+        </div>
+        <div class="itemRight">
+          <svg class="icon" aria-hidden="true ">
+            <use xlink:href="#icon-z31sousuo"></use>
+          </svg>
+          <svg class="icon" aria-hidden="true">
+            <use xlink:href="#icon-z31liebiao"></use>
+          </svg>
+        </div>
       </div>
-      <div class="itemRight">
-        <svg class="icon" aria-hidden="true ">
-          <use xlink:href="#icon-z31sousuo"></use>
-        </svg>
-        <svg class="icon" aria-hidden="true">
-          <use xlink:href="#icon-z31liebiao"></use>
-        </svg>
+      <div style="padding: 10px 20px;" v-if="w">
+        <div style="width: 40%;position: relative;float: left;" @click="showPopup">
+          <van-image width="100%" height="2.3rem" fit="contain" :src="Singing.playlist.coverImgUrl" lazy-load>
+          </van-image>
+          <span class="playbackVolume">
+            <van-icon name="play-circle-o" />
+            {{ formatNumber(Singing.playlist.playCount) }}
+          </span>
+        </div>
+        <div style="margin-left: 10px;float: left;width: 57%;">
+          <p style="color:#fff">{{ Singing.playlist.name }}</p>
+          <div class="avatarUrl">
+            <div style="position: relative;">
+              <van-image round width=".5rem" height=".5rem" :src="Singing.playlist.creator.avatarUrl" />
+              <div v-if="Singing.playlist.creator.avatarDetail.identityIconUrl" class="backgroundUrl">
+                <van-image round width=".3rem" height=".3rem" fit="fill"
+                  :src="Singing.playlist.creator.avatarDetail.identityIconUrl" />
+              </div>
+            </div>
+            <span class="nickname">{{ Singing.playlist.creator.nickname }}</span>
+            <span class="guanzhu"><van-icon name="plus" />关注</span>
+          </div>
+        </div>
+        <div class="description" @click="showPopup">
+          <p>
+            {{ Singing.playlist.description }}
+          </p>
+          <van-icon name="arrow" :size="20" />
+        </div>
+        <van-popup v-model="show" @click="show = false">
+          <div class="songdetailed">
+            <div>
+              <van-image width="200px" height="200px" fit="cover" :src="Singing.playlist.coverImgUrl" lazy-load />
+            </div>
+            <p class="itemFm">{{ Singing.playlist.name }}</p>
+          </div>
+          <div class="itemLabel">
+            <span>标签:</span>
+            <span v-for="item, index in Singing.playlist.tags" :key="index" class="labelFor">{{ item }}</span>
+          </div>
+          <p style="white-space: pre-line;color: aliceblue;margin-top: .1rem;line-height: .5rem;font-size: 10px;">{{
+            Singing.playlist.description }}</p>
+        </van-popup>
+      </div>
+      <div class="itemIcon">
+        <span><van-icon name="share-o" />{{ Singing.playlist.shareCount }}</span>
+        <span><van-icon name="chat-o" />{{ Singing.playlist.commentCount }}</span>
+        <span><van-icon name="add-o" />{{ Singing.playlist.subscribedCount }}</span>
       </div>
     </div>
-    <div style="padding: 10px 20px;" v-if="w">
-      <div style="width: 40%;position: relative;float: left;" @click="showPopup">
-        <van-image width="100%" height="2.3rem" fit="cover" :src="Singing.playlist.coverImgUrl" lazy-load>
-        </van-image>
-        <span class="playbackVolume">
-          <van-icon name="play-circle-o" />
-          {{ formatNumber(Singing.playlist.playCount) }}
-        </span>
-      </div>
-
-      <div style="margin-left: 10px;float: left;width: 57%;">
-        <p style="color:#fff">{{ Singing.playlist.name }}</p>
-        <div class="avatarUrl">
-          <div style="position: relative;">
-            <van-image round width=".5rem" height=".5rem" :src="Singing.playlist.creator.avatarUrl" />
-            <div v-if="Singing.playlist.creator.avatarDetail.identityIconUrl" class="backgroundUrl">
-              <van-image round width=".3rem" height=".3rem"
-                :src="Singing.playlist.creator.avatarDetail.identityIconUrl" />
-            </div>
-          </div>
-          <span class="nickname">{{ Singing.playlist.creator.nickname }}</span>
-          <span class="guanzhu"><van-icon name="plus" />关注</span>
-        </div>
-      </div>
-      <div class="description" @click="showPopup">
-        <p>
-          {{ Singing.playlist.description }}
-        </p>
-        <van-icon name="arrow" :size="20" />
-      </div>
-      <van-popup v-model="show" @click="show = false">
-        <div class="songdetailed">
-          <div>
-            <van-image width="200px" height="200px" fit="cover" :src="Singing.playlist.coverImgUrl" lazy-load />
-          </div>
-          <p class="itemFm">{{ Singing.playlist.name }}</p>
-        </div>
-        <div class="itemLabel">
-          <span>标签:</span>
-          <span v-for="item, index in Singing.playlist.tags" :key="index" class="labelFor">{{ item }}</span>
-        </div>
-        <p style="white-space: pre-line;color: aliceblue;margin-top: .1rem;line-height: .5rem;">{{ Singing.playlist.description }}</p>
-      </van-popup>
+    <div>
+{{}}
     </div>
   </div>
 </template>
@@ -164,7 +174,7 @@ export default {
 
   .itemImg {
     width: 100%;
-    height: 400px;
+    height: 450px;
     position: absolute;
     z-index: -1;
     filter: blur(30px);
@@ -266,4 +276,24 @@ export default {
       margin-left: .2rem;
     }
   }
+}
+
+.itemIcon {
+  width: 100%;
+  height: 40px;
+  line-height: 40px;
+  color: #ffffff;
+  display: flex;
+  justify-content: space-around;
+
+  .van-icon {
+    margin-right: 5px;
+  }
+}
+
+.itemIcon span {
+  font-size: 13px;
+  padding: 0 20px;
+  border-radius: 25px;
+  background-color: rgb(178 178 178 / 50%);
 }</style>

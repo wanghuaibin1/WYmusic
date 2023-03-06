@@ -65,7 +65,37 @@ export const datailAPI = params => request({
  * @param {*} params
  * @returns
  */
-export const loginAPI = params => request({
-  url: '/login/cellphone',
+// export const loginAPI = params => request({
+//   url: '/login/cellphone',
+//   params
+// })
+
+/**
+ *  登录获取key
+ * @returns
+ */
+export const keyAPI = params => request({
+  url: '/login/qr/key',
+  params
+})
+
+/**
+ * 登录通过key获取二维码的base64值
+ * @param {*} params   获取的key
+ * @returns
+ */
+export const createAPI = params => request({
+  url: '/login/qr/create',
+  params
+})
+
+/**
+ * 二维码检测扫码状态接口
+
+ * @param {*} params  key,由第一个接口生成
+ * @returns
+ */
+export const checkAPI = params => request({
+  url: '/login/qr/check',
   params
 })
