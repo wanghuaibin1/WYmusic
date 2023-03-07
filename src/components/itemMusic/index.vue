@@ -1,8 +1,9 @@
 <template>
-  <div>
+  <div v-if="w">
     <div>
+      <van-sticky>
       <div class="itemMusicTop">
-        <img v-if="w" :src="Singing.playlist.coverImgUrl" alt="" class="itemImg">
+        <!-- <img v-if="w" :src="Singing.playlist.coverImgUrl" alt="" class="itemImg"> -->
         <div class="itemLeft">
           <svg class="icon" aria-hidden="true" @click="$router.back()">
             <use xlink:href="#icon-xitongfanhui"></use>
@@ -18,9 +19,10 @@
           </svg>
         </div>
       </div>
-      <div style="padding: 10px 20px;" v-if="w">
+    </van-sticky>
+      <div style="padding: 10px 20px;">
         <div style="width: 40%;position: relative;float: left;" @click="showPopup">
-          <van-image width="100%" height="2.3rem" fit="contain" :src="Singing.playlist.coverImgUrl" lazy-load>
+          <van-image width="100%" fit="contain" :src="Singing.playlist.coverImgUrl" lazy-load>
           </van-image>
           <span class="playbackVolume">
             <van-icon name="play-circle-o" />
@@ -65,34 +67,71 @@
       <div class="itemIcon">
         <span><van-icon name="share-o" />{{ Singing.playlist.shareCount }}</span>
         <span><van-icon name="chat-o" />{{ Singing.playlist.commentCount }}</span>
-        <span><van-icon name="add-o" />{{ Singing.playlist.subscribedCount }}</span>
+        <span><van-icon name="add-o" />{{ formatNumber(Singing.playlist.subscribedCount) }}</span>
       </div>
     </div>
-    <div>
-{{}}
+    <div class="sheetSong">
+      <div class="broadcastSong">
+        <div class="songLift">
+          <span><van-icon size=".4rem" color="red" name="play-circle" /></span>
+          <span style="font-size: .3rem;">播放全部</span>
+          <span style="font-size: .2rem;">{{ "(" + track.privileges.length + ")" }}</span>
+        </div>
+        <div class="songRight">
+          <span><van-icon name="down" /></span>
+          <span><van-icon name="orders-o" /></span>
+        </div>
+      </div>
+      <div class="song">
+        <div class="songItem" v-for="obj, index in track.songs" :key="obj.id">
+          <span class="songIndex">{{ index + 1 }}</span>
+          <div class="songName">
+            <p>{{ obj.name }}</p>
+            <p v-if="obj.ar.length === 0">{{ obj.ar[0].name + "-" + obj.al.name }} </p>
+            <p v-else>{{ author(obj.ar)+ "-" + obj.al.name  }}</p>
+          </div>
+          <div class="songIcon">
+            <svg style="align-items: first baseline;" class="icon" aria-hidden="true">
+              <use xlink:href="#icon-shipinbofang"></use>
+            </svg>
+            <svg class="icon" aria-hidden="true">
+              <use xlink:href="#icon-androidgengduo"></use>
+            </svg>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
+  <van-loading v-else size="24px" vertical color="#0094ff"> 加载中...</van-loading>
 </template>
 
 <script>
-import { datailAPI } from '@/api'
+import { datailAPI, trackAllAPI } from '@/api'
 export default {
   name: 'Item-muusic',
   data () {
     return {
       show: false,
       w: false,
-      Singing: {}
+      // 歌单详情
+      Singing: {},
+      // 歌单所有歌曲
+      track: {}
     }
   },
   methods: {
     showPopup () {
       this.show = true
     },
+    // 歌单详情
     async dataolApi () {
       const { data: res } = await datailAPI({ id: this.$route.query.id })
       this.Singing = res
       this.w = true
+    },
+    async trackall () {
+      const { data: res } = await trackAllAPI({ id: this.$route.query.id })
+      this.track = res
     },
     // 数字转换成万
     formatNumber (num) {
@@ -107,6 +146,13 @@ export default {
       } else {
         return (num / 100000000).toFixed(1) + '亿'
       }
+    },
+    author (obj) {
+      const name = []
+      obj.map(item => {
+        return name.push(item.name)
+      })
+      return name.join('/')
     }
   },
   components: {},
@@ -115,6 +161,7 @@ export default {
   computed: {},
   created () {
     this.dataolApi()
+    this.trackall()
   },
   mounted () { }
 }
@@ -173,6 +220,7 @@ export default {
   }
 
   .itemImg {
+    z-index: -1;
     width: 100%;
     height: 450px;
     position: absolute;
@@ -296,4 +344,79 @@ export default {
   padding: 0 20px;
   border-radius: 25px;
   background-color: rgb(178 178 178 / 50%);
-}</style>
+}
+
+.sheetSong {
+  width: 100%;
+  background-color: #ffffff;
+  border-radius: 10px 10px 0 0;
+  margin-top: 30px;
+
+  .broadcastSong {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    line-height: 50px;
+    text-align: center;
+
+    // .songLift,.songRight{
+    //   display: flex;
+    // justify-content: space-between;
+    // }
+    .songLift span {
+      margin-left: 20px;
+    }
+
+    .songRight span {
+      margin-right: 20px;
+      font-size: 20px;
+    }
+  }
+
+  .song {
+
+    .songItem {
+      height: 50px;
+      line-height: 50px;
+      display: flex;
+      align-items: center;
+
+      .songIndex {
+        flex: 1.5;
+        text-align: center;
+      color: #dd6868;
+      }
+
+      .songName {
+        flex: 6.5;
+        overflow: hidden;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .songName p {
+        line-height: 15px;
+        height: 15px;
+        font-size: 10px;
+        margin: 0;
+        overflow: hidden;
+        white-space: nowrap;
+         text-overflow: ellipsis;
+      }
+      .songName p:nth-child(2){
+        color: #787878;
+      }
+      .songIcon {
+        display: flex;
+        font-size: 20px;
+        flex-grow: 2;
+        justify-content: space-around;
+      }
+    }
+
+  }
+}
+</style>

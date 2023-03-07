@@ -59,6 +59,18 @@ export const datailAPI = params => request({
   url: '/playlist/detail',
   params
 })
+/**
+ * 获取歌单所有歌曲
+ * @param {*} params
+ * @returns 必选参数 : id : 歌单 id
+可选参数 : limit : 限制获取歌曲的数量，默认值为当前歌单的歌曲数量
+
+可选参数 : offset : 默认值为0
+ */
+export const trackAllAPI = params => request({
+  url: '/playlist/track/all',
+  params
+})
 
 /**
  * 登录

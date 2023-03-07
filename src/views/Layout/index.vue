@@ -49,9 +49,13 @@
         </svg>
         </span>
       </p>
+      <lazy-component>
       <div class="songFence" v-if="w">
+
       <Song  v-for="obj in persoan" :key="obj.id" :picUrl="obj.picUrl" :name="obj.name" :playCount="obj.playCount" :id="obj.id" />
-      </div>
+
+    </div>
+  </lazy-component>
     </div>
   </div>
 </template>
