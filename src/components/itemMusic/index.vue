@@ -1,25 +1,26 @@
 <template>
   <div v-if="w">
+    <!-- 歌单详情 -->
     <div>
       <van-sticky>
-      <div class="itemMusicTop">
-        <!-- <img v-if="w" :src="Singing.playlist.coverImgUrl" alt="" class="itemImg"> -->
-        <div class="itemLeft">
-          <svg class="icon" aria-hidden="true" @click="$router.back()">
-            <use xlink:href="#icon-xitongfanhui"></use>
-          </svg>
-          <span>歌单</span>
+        <div class="itemMusicTop" :style="{ backgroundColor: backgroundColor }">
+          <!-- <img v-if="w" :src="Singing.playlist.coverImgUrl" alt="" class="itemImg"> -->
+          <div class="itemLeft">
+            <svg class="icon" aria-hidden="true" @click="$router.back()">
+              <use xlink:href="#icon-xitongfanhui"></use>
+            </svg>
+            <span>歌单</span>
+          </div>
+          <div class="itemRight">
+            <svg class="icon" aria-hidden="true ">
+              <use xlink:href="#icon-z31sousuo"></use>
+            </svg>
+            <svg class="icon" aria-hidden="true">
+              <use xlink:href="#icon-z31liebiao"></use>
+            </svg>
+          </div>
         </div>
-        <div class="itemRight">
-          <svg class="icon" aria-hidden="true ">
-            <use xlink:href="#icon-z31sousuo"></use>
-          </svg>
-          <svg class="icon" aria-hidden="true">
-            <use xlink:href="#icon-z31liebiao"></use>
-          </svg>
-        </div>
-      </div>
-    </van-sticky>
+      </van-sticky>
       <div style="padding: 10px 20px;">
         <div style="width: 40%;position: relative;float: left;" @click="showPopup">
           <van-image width="100%" fit="contain" :src="Singing.playlist.coverImgUrl" lazy-load>
@@ -41,7 +42,11 @@
             </div>
             <span class="nickname">{{ Singing.playlist.creator.nickname }}</span>
             <span class="guanzhu"><van-icon name="plus" />关注</span>
+
           </div>
+          <div class="algTags" v-if="Singing.playlist.algTags.length!==0">
+              <span v-for="obj,index in Singing.playlist.algTags" :key="index">{{ obj +">"}}</span>
+            </div>
         </div>
         <div class="description" @click="showPopup">
           <p>
@@ -70,33 +75,38 @@
         <span><van-icon name="add-o" />{{ formatNumber(Singing.playlist.subscribedCount) }}</span>
       </div>
     </div>
-    <div class="sheetSong">
-      <div class="broadcastSong">
-        <div class="songLift">
-          <span><van-icon size=".4rem" color="red" name="play-circle" /></span>
-          <span style="font-size: .3rem;">播放全部</span>
-          <span style="font-size: .2rem;">{{ "(" + track.privileges.length + ")" }}</span>
+    <div class="sheetSong" ref="itemMusic">
+      <van-sticky :offset-top="50">
+        <div class="broadcastSong">
+          <div class="songLift">
+            <span><van-icon size=".4rem" color="red" name="play-circle" /></span>
+            <span style="font-size: .3rem;">播放全部</span>
+            <span style="font-size: .2rem;">{{ "(" + track.privileges.length + ")" }}</span>
+          </div>
+          <div class="songRight">
+            <span><van-icon name="down" /></span>
+            <span><van-icon name="orders-o" /></span>
+          </div>
         </div>
-        <div class="songRight">
-          <span><van-icon name="down" /></span>
-          <span><van-icon name="orders-o" /></span>
-        </div>
-      </div>
+      </van-sticky>
       <div class="song">
         <div class="songItem" v-for="obj, index in track.songs" :key="obj.id">
           <span class="songIndex">{{ index + 1 }}</span>
           <div class="songName">
             <p>{{ obj.name }}</p>
-            <p v-if="obj.ar.length === 0">{{ obj.ar[0].name + "-" + obj.al.name }} </p>
-            <p v-else>{{ author(obj.ar)+ "-" + obj.al.name  }}</p>
+            <p v-if="obj.ar.length === 0">{{ obj.ar[0].name + "—" + obj.al.name }} </p>
+            <p v-else>{{ author(obj.ar) + "—" + obj.al.name }}</p>
           </div>
           <div class="songIcon">
-            <svg style="align-items: first baseline;" class="icon" aria-hidden="true">
-              <use xlink:href="#icon-shipinbofang"></use>
-            </svg>
-            <svg class="icon" aria-hidden="true">
-              <use xlink:href="#icon-androidgengduo"></use>
-            </svg>
+            <span>
+              <svg  class="icon" aria-hidden="true">
+                <use xlink:href="#icon-shipinbofang"></use>
+              </svg>
+            </span>
+            <span>
+              <svg class="icon" aria-hidden="true">
+                <use xlink:href="#icon-androidgengduo"></use>
+              </svg></span>
           </div>
         </div>
       </div>
@@ -107,6 +117,7 @@
 
 <script>
 import { datailAPI, trackAllAPI } from '@/api'
+
 export default {
   name: 'Item-muusic',
   data () {
@@ -116,7 +127,9 @@ export default {
       // 歌单详情
       Singing: {},
       // 歌单所有歌曲
-      track: {}
+      track: {},
+      backgroundColor: '',
+      t: 1
     }
   },
   methods: {
@@ -129,6 +142,7 @@ export default {
       this.Singing = res
       this.w = true
     },
+    // 歌曲
     async trackall () {
       const { data: res } = await trackAllAPI({ id: this.$route.query.id })
       this.track = res
@@ -147,23 +161,49 @@ export default {
         return (num / 100000000).toFixed(1) + '亿'
       }
     },
+    // 歌曲作者拼接
     author (obj) {
       const name = []
       obj.map(item => {
         return name.push(item.name)
       })
       return name.join('/')
+    },
+    // 添加这个handleScroll方法来获取滚动的位置
+    handleScroll () {
+      const scrollTop =
+        window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+      const offsetTop = document.querySelector('.sheetSong').offsetTop
+      console.log(offsetTop)
+
+      // 设置背景颜色的透明读
+      if (scrollTop && offsetTop) {
+        this.backgroundColor = `rgba(0, 0, 0,${scrollTop / (scrollTop + 40)})`
+      } else if (scrollTop === 0) {
+        this.backgroundColor = 'transparent'
+      }
     }
+    //   收藏歌单/取消歌单    暂时不能使用
+    // async subscribeApi () {
+    //   const { data: res } = await subscribeAPI({ t: this.t, id: this.$route.query.id, headers: this.$store.state.cookie })
+    //   console.log(res)
+    // }
   },
   components: {},
   props: {},
-  watch: {},
+  watch: {
+  },
   computed: {},
   created () {
     this.dataolApi()
     this.trackall()
   },
-  mounted () { }
+  mounted () {
+    window.addEventListener('scroll', this.handleScroll) // 监听页面滚动
+  },
+  beforeDestroy () {
+    window.removeEventListener('scroll', this.handleScroll)
+  }
 }
 </script>
 <style lang="less" scoped>
@@ -198,6 +238,7 @@ export default {
   align-items: center;
   position: relative;
 
+  // opacity: 0;
   .itemLeft,
   .itemRight {
     width: 25%;
@@ -225,6 +266,9 @@ export default {
     height: 450px;
     position: absolute;
     z-index: -1;
+    position: fixed;
+    top: 0;
+    left: 0;
     filter: blur(30px);
   }
 }
@@ -255,13 +299,28 @@ export default {
     height: .4rem;
     line-height: .4rem;
     text-align: center;
-    font-size: .2rem;
+    font-size: .15rem;
     color: #ffffff;
     border-radius: .4rem;
     background-color: rgb(168 168 168 / 39%);
   }
-}
 
+}
+.algTags{
+    width: 100%;
+    height: 20px;
+    line-height: 20px;
+    display: flex;
+
+  }
+  .algTags span{
+    padding: 0 5px;
+      margin-right: 10px;
+      border-radius: 3px;
+      background-color:rgba(178, 178, 178, 0.5);
+      color: #ffffff;
+      font-size: 10px;
+    }
 .description {
   clear: both;
   width: 100%;
@@ -359,6 +418,7 @@ export default {
     align-items: center;
     line-height: 50px;
     text-align: center;
+    background-color: rgb(255, 255, 255);
 
     // .songLift,.songRight{
     //   display: flex;
@@ -385,7 +445,7 @@ export default {
       .songIndex {
         flex: 1.5;
         text-align: center;
-      color: #dd6868;
+        color: #dd6868;
       }
 
       .songName {
@@ -404,19 +464,20 @@ export default {
         margin: 0;
         overflow: hidden;
         white-space: nowrap;
-         text-overflow: ellipsis;
+        text-overflow: ellipsis;
       }
-      .songName p:nth-child(2){
+
+      .songName p:nth-child(2) {
         color: #787878;
       }
-      .songIcon {
-        display: flex;
+
+      .songIcon span{
+      margin-right: 20px;
+
         font-size: 20px;
         flex-grow: 2;
-        justify-content: space-around;
       }
     }
 
   }
-}
-</style>
+}</style>

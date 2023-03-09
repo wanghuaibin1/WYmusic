@@ -1,31 +1,19 @@
 <template>
   <div class="lg">
-    <!-- <div class="form">
-      <van-form @submit="onSubmit">
-
-        <van-field v-model="phone" name="手机号"  placeholder="手机号"
-          :rules="[{ pattern, message: '请填写手机号' }]" />
-        <van-field v-model="password" type="password" name="密码"  placeholder="密码"
-          :rules="[{ required: true, message: '请填写密码' }]" />
-        <div style="margin: .32rem;">
-          <van-button round block type="info" native-type="submit">登录</van-button>
-        </div>
-      </van-form>
-      <van-button type="primary" to="index" color="rgb(236, 236, 236)">去注册</van-button>
-      <button @click="q">获得key</button>
-      <button @click="w">获取beas64</button>
-      <img  src="" alt="">
-      <img src="" alt="">
-    </div> -->
     <div class="loginButton">
-      <button v-if="k" @click="loginQRcode"
+      <button v-if="k===0" @click="loginQRcode"
         style="  width:2.2rem;height: 1rem;color: #ffff;background-color: rgb(59 59 59 / 50%);">二维码登录</button>
       <!-- <van-loading size=".48rem" vertical></van-loading> -->
-      <van-image v-else :src="this.base64">
+      <van-image v-else-if="k===1" :src="this.base64">
         <template v-slot:loading>
           <van-loading size="24px" type="spinner" vertical>加载中...</van-loading>
         </template>
       </van-image>
+      <div v-else class="user">
+        <img :src="user.avatarUrl" alt="">
+        <p>{{ user.nickname }}</p>
+      </div>
+
     </div>
 
   </div>
@@ -34,60 +22,64 @@
 <script>
 // 调用vuex里的mutations方法
 import { mapMutations } from 'vuex'
-import { loginAPI, keyAPI, createAPI, checkAPI } from '@/api'
+import { loginAPI, keyAPI, createAPI, checkAPI, statusAPI } from '@/api'
 export default {
   name: 'Log-in',
   data () {
     return {
-      pattern: /^(?:(?:\+|00)86)?1(?:(?:3[\d])|(?:4[5-79])|(?:5[0-35-9])|(?:6[5-7])|(?:7[0-8])|(?:8[\d])|(?:9[1589]))\d{8}$/,
-      phone: '',
-      password: '',
       key: '',
       base64: '',
-      k: true,
-      cookies: ''
+      k: 0,
+      cookies: '',
+      user: {}
     }
   },
   methods: {
-    ...mapMutations(['updataToken']), // 映射调用vuex中的方法保存token
+    ...mapMutations(['updataCookie', 'usernformation']), // 映射调用vuex中的方法保存token
     async onSubmit () {
       const { data: res } = await loginAPI({ phone: this.phone, password: Date.now() })
       console.log(res)
     },
+    // 登录状态 解析cookie拿到用户数据保存在vuex中
+    async statusApi (cookie = '') {
+      const { data: res } = await statusAPI({ cookie, timerstamp: Date.now() })
+      // console.log(JSON.stringify(res, null, 2))
+      this.usernformation(JSON.parse(JSON.stringify(res, null, 2)))
+    },
     // 二维码登录 获取key
     async loginQRcode () {
-      this.k = false
-      const { data: res } = await keyAPI({ timerstamp: Date.now() })
-      this.key = res.data.unikey
-      this.w()
-      setInterval(() => {
-        this.q()
-      }, 1000)
-    },
-    // 二维码登录 获取base64
-    async w () {
-      const { data: res } = await createAPI({ key: this.key, qrimg: true })
-      console.log(res)
-      this.base64 = res.data.qrimg
-      // document.querySelector('img').setAttribute('src', this.base64)
-    },
-    // 二维码检测扫码状态接口
-    async q () {
-      const { data: res } = await checkAPI({ key: this.key, timerstamp: Date.now() })
-      if (res.code === 800) {
-        this.$toast('二维码已过期')
-        this.key = ''
-        this.base64 = ''
-        this.k = true
-      } else if (res.code === 802) {
+      // let timer
+      this.k = 1
+      const { data: key } = await keyAPI({ timerstamp: Date.now() })
+      this.key = key.data.unikey
+      // 二维码登录 获取base64
+      const { data: base } = await createAPI({ key: this.key, qrimg: true })
+      this.base64 = base.data.qrimg
+      // 二维码检测扫码状态接口
+      const timer = setInterval(async () => {
+        const { data: res } = await checkAPI({ key: this.key, timerstamp: Date.now() })
+        if (res.code === 800) {
+          alert('二维码已过期,请重新获取')
+          clearInterval(timer)
+          this.key = ''
+          this.base64 = ''
+          this.k = 0
+        } else if (res.code === 802) {
         // 已扫码待确认
-        this.$toast(res.message)
-      } else if (res.code === 803) {
+          this.$toast(res.message)
+          console.log(res)
+          this.user = res
+          this.k = 3
+        } else if (res.code === 803) {
         // 登录成功
-        this.cookies = res.cookie
-        this.updataToken(res.cookie)
-        this.$router.push('/layout')
-      }
+          clearInterval(timer) // 清除定时器
+          alert('授权登录成功')
+          this.statusApi(res.cookie) // 检查登录状态
+          // this.cookies = res.cookie
+          this.updataCookie(res.cookie) // 保存在vuex中
+          this.$router.push('/layout')
+        }
+      }, 3000)
     }
   },
   components: {},
@@ -123,7 +115,7 @@ export default {
     // width:110px;
     // height: 50px;
     color: #ffff;
-    background-color: rgb(59 59 59 / 50%);
+    // background-color: rgb(59 59 59 / 50%);
 
   }
 
@@ -156,5 +148,10 @@ export default {
 
 /deep/.van-button__text {
   color: #464646;
+}
+.user img{
+width: 200px;
+height: 200px;
+border-radius: 100px;
 }
 </style>

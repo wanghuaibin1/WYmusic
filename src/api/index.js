@@ -1,5 +1,4 @@
 import request from '@/utils/request'
-
 /**
  *搜索建议
  * @param {*} keywords : 关键词
@@ -73,6 +72,16 @@ export const trackAllAPI = params => request({
 })
 
 /**
+ * 收藏歌单/取消歌单
+ * @param {*} params t : 类型,1:收藏,2:取消收藏 id : 歌单 id
+ * @returns
+ */
+export const subscribeAPI = data => request({
+  url: '/playlist/subscribe',
+  data
+})
+
+/**
  * 登录
  * @param {*} params
  * @returns
@@ -109,5 +118,15 @@ export const createAPI = params => request({
  */
 export const checkAPI = params => request({
   url: '/login/qr/check',
+  params
+})
+
+/**
+ * 登录状态
+ * @param {*} params
+ * @returns
+ */
+export const statusAPI = params => request({
+  url: '/login/status',
   params
 })

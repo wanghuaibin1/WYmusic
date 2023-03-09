@@ -4,10 +4,16 @@ import store from '@/store'
 Vue.use(VueRouter)
 
 const routes = [
-
   {
-    path: '/layout',
-    component: () => import('@/views/Layout')
+    path: '/',
+    component: () => import('@/views/Layout'),
+    redirect: '/find',
+    children: [
+      {
+        path: 'find',
+        component: () => import('@/components/find')
+      }
+    ]
   },
   {
     path: '/search',

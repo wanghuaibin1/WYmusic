@@ -4,6 +4,7 @@
     <router-view />
     </keep-alive>
   </div>
+
 </template>
 
 <style lang="less" >

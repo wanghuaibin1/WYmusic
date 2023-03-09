@@ -5,13 +5,17 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    cookie: ''// 保存登录成功后的token值
+    cookie: '', // 保存登录成功后的token值
+    user: '' // 用户信息
   },
   getters: {
   },
   mutations: {
-    updataToken (state, val) {
+    updataCookie (state, val) {
       state.cookie = val
+    },
+    usernformation (state, val) {
+      state.user = val
     }
   },
   actions: {
