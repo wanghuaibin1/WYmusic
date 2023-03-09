@@ -1,8 +1,7 @@
 <template>
   <div id="app">
-    <keep-alive include="songImg ">
     <router-view />
-    </keep-alive>
+
   </div>
 
 </template>

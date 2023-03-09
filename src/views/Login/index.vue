@@ -44,7 +44,7 @@ export default {
     async statusApi (cookie = '') {
       const { data: res } = await statusAPI({ cookie, timerstamp: Date.now() })
       // console.log(JSON.stringify(res, null, 2))
-      this.usernformation(JSON.parse(JSON.stringify(res, null, 2)))
+      this.usernformation(JSON.stringify(res, null, 2))
     },
     // 二维码登录 获取key
     async loginQRcode () {
@@ -77,7 +77,7 @@ export default {
           this.statusApi(res.cookie) // 检查登录状态
           // this.cookies = res.cookie
           this.updataCookie(res.cookie) // 保存在vuex中
-          this.$router.push('/layout')
+          this.$router.push('/')
         }
       }, 3000)
     }

@@ -4,11 +4,11 @@
         <van-swipe class="my-swipe" :autoplay="3000" indicator-color="white">
             <van-swipe-item style="background-color: transparent" v-for="obj in banner" :key="obj.bannerId">
                 <img style=" width: 100%;
-                                height: 100%;
-                                object-fit: cover;
-                                padding: .2rem;
-                                border-radius: .39rem;
-                              " :src="obj.pic" alt="" />
+                                    height: 100%;
+                                    object-fit: cover;
+                                    padding: .2rem;
+                                    border-radius: .39rem;
+                                  " :src="obj.pic" alt="" />
                 <span class="typeTitle">{{ obj.typeTitle }}</span>
             </van-swipe-item>
         </van-swipe>
@@ -31,12 +31,13 @@
                 </span>
             </p>
             <lazy-component>
-                <div class="songFence" v-if="w">
+                <keep-alive>
+                    <div class="songFence" v-if="w">
+                        <Song v-for="obj in persoan" :key="obj.id" :picUrl="obj.picUrl" :name="obj.name"
+                            :playCount="obj.playCount" :id="obj.id" />
+                    </div>
+                </keep-alive>
 
-                    <Song v-for="obj in persoan" :key="obj.id" :picUrl="obj.picUrl" :name="obj.name"
-                        :playCount="obj.playCount" :id="obj.id" />
-
-                </div>
             </lazy-component>
         </div>
 

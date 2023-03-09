@@ -1,10 +1,11 @@
-<template>
-  <div v-if="w">
     <!-- 歌单详情 -->
+<template>
+  <!-- 普通歌单 -->
+  <div v-if="w">
     <div>
       <van-sticky>
         <div class="itemMusicTop" :style="{ backgroundColor: backgroundColor }">
-          <!-- <img v-if="w" :src="Singing.playlist.coverImgUrl" alt="" class="itemImg"> -->
+          <!-- <img v-if="w" :src="Singing.coverImgUrl" alt="" class="itemImg"> -->
           <div class="itemLeft">
             <svg class="icon" aria-hidden="true" @click="$router.back()">
               <use xlink:href="#icon-xitongfanhui"></use>
@@ -23,56 +24,57 @@
       </van-sticky>
       <div style="padding: 10px 20px;">
         <div style="width: 40%;position: relative;float: left;" @click="showPopup">
-          <van-image width="100%" fit="contain" :src="Singing.playlist.coverImgUrl" lazy-load>
+          <van-image width="100%" fit="contain" :src="Singing.coverImgUrl" lazy-load>
           </van-image>
           <span class="playbackVolume">
             <van-icon name="play-circle-o" />
-            {{ formatNumber(Singing.playlist.playCount) }}
+            {{ formatNumber(Singing.playCount) }}
           </span>
         </div>
         <div style="margin-left: 10px;float: left;width: 57%;">
-          <p style="color:#fff">{{ Singing.playlist.name }}</p>
+          <p style="color:#fff">{{ Singing.name }}</p>
           <div class="avatarUrl">
             <div style="position: relative;">
-              <van-image round width=".5rem" height=".5rem" :src="Singing.playlist.creator.avatarUrl" />
-              <div v-if="Singing.playlist.creator.avatarDetail.identityIconUrl" class="backgroundUrl">
+              <van-image round width=".5rem" height=".5rem" :src="Singing.creator.avatarUrl" />
+              <!-- <div v-if="Singing.creator.avatarDetail.identityIconUrl" class="backgroundUrl">
                 <van-image round width=".3rem" height=".3rem" fit="fill"
-                  :src="Singing.playlist.creator.avatarDetail.identityIconUrl" />
-              </div>
+                  :src="Singing.creator.avatarDetail.identityIconUrl" />
+              </div> -->
             </div>
-            <span class="nickname">{{ Singing.playlist.creator.nickname }}</span>
+            <span class="nickname">{{ Singing.creator.nickname }}</span>
             <span class="guanzhu"><van-icon name="plus" />关注</span>
 
           </div>
-          <div class="algTags" v-if="Singing.playlist.algTags.length!==0">
-              <span v-for="obj,index in Singing.playlist.algTags" :key="index">{{ obj +">"}}</span>
+          <div class="algTags" v-if="Singing.algTags.length!==0">
+              <span v-for="obj,index in Singing.algTags" :key="index">{{ obj +">"}}</span>
             </div>
         </div>
+        <!-- 遮盖层 -->
         <div class="description" @click="showPopup">
           <p>
-            {{ Singing.playlist.description }}
+            {{ Singing.description }}
           </p>
           <van-icon name="arrow" :size="20" />
         </div>
         <van-popup v-model="show" @click="show = false">
           <div class="songdetailed">
             <div>
-              <van-image width="200px" height="200px" fit="cover" :src="Singing.playlist.coverImgUrl" lazy-load />
+              <van-image width="200px" height="200px" fit="cover" :src="Singing.coverImgUrl" lazy-load />
             </div>
-            <p class="itemFm">{{ Singing.playlist.name }}</p>
+            <p class="itemFm">{{ Singing.name }}</p>
           </div>
           <div class="itemLabel">
             <span>标签:</span>
-            <span v-for="item, index in Singing.playlist.tags" :key="index" class="labelFor">{{ item }}</span>
+            <span v-for="item, index in Singing.tags" :key="index" class="labelFor">{{ item }}</span>
           </div>
           <p style="white-space: pre-line;color: aliceblue;margin-top: .1rem;line-height: .5rem;font-size: 10px;">{{
-            Singing.playlist.description }}</p>
+            Singing.description }}</p>
         </van-popup>
       </div>
       <div class="itemIcon">
-        <span><van-icon name="share-o" />{{ Singing.playlist.shareCount }}</span>
-        <span><van-icon name="chat-o" />{{ Singing.playlist.commentCount }}</span>
-        <span><van-icon name="add-o" />{{ formatNumber(Singing.playlist.subscribedCount) }}</span>
+        <span><van-icon name="share-o" />{{ Singing.shareCount }}</span>
+        <span><van-icon name="chat-o" />{{ Singing.commentCount }}</span>
+        <span><van-icon name="add-o" />{{ formatNumber(Singing.subscribedCount) }}</span>
       </div>
     </div>
     <div class="sheetSong" ref="itemMusic">
@@ -112,12 +114,18 @@
       </div>
     </div>
   </div>
+  <!-- 官方歌单 -->
+  <div v-else-if="specialType===100">
+
+  {{ this.$toast('官方歌单')}}
+  </div>
+<!-- <div v-else-if="w||specialType===200">
+</div> -->
   <van-loading v-else size="24px" vertical color="#0094ff"> 加载中...</van-loading>
 </template>
 
 <script>
 import { datailAPI, trackAllAPI } from '@/api'
-
 export default {
   name: 'Item-muusic',
   data () {
@@ -125,11 +133,11 @@ export default {
       show: false,
       w: false,
       // 歌单详情
-      Singing: {},
+      Singing: '',
       // 歌单所有歌曲
       track: {},
       backgroundColor: '',
-      t: 1
+      specialType: ''
     }
   },
   methods: {
@@ -139,8 +147,10 @@ export default {
     // 歌单详情
     async dataolApi () {
       const { data: res } = await datailAPI({ id: this.$route.query.id })
-      this.Singing = res
+      this.Singing = res.playlist
+      this.trackall()
       this.w = true
+      this.specialType = res.playlist.specialType
     },
     // 歌曲
     async trackall () {
@@ -173,11 +183,10 @@ export default {
     handleScroll () {
       const scrollTop =
         window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
-      const offsetTop = document.querySelector('.sheetSong').offsetTop
-      console.log(offsetTop)
+      // const offsetTop = document.querySelector('.sheetSong').offsetTop
 
       // 设置背景颜色的透明读
-      if (scrollTop && offsetTop) {
+      if (scrollTop) {
         this.backgroundColor = `rgba(0, 0, 0,${scrollTop / (scrollTop + 40)})`
       } else if (scrollTop === 0) {
         this.backgroundColor = 'transparent'
@@ -189,20 +198,16 @@ export default {
     //   console.log(res)
     // }
   },
-  components: {},
-  props: {},
-  watch: {
-  },
   computed: {},
   created () {
     this.dataolApi()
-    this.trackall()
   },
   mounted () {
     window.addEventListener('scroll', this.handleScroll) // 监听页面滚动
   },
   beforeDestroy () {
     window.removeEventListener('scroll', this.handleScroll)
+    console.log(4)
   }
 }
 </script>

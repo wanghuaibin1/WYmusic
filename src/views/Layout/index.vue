@@ -8,10 +8,6 @@
         </svg>
       </div>
       <div class="topConent">
-        <!-- <span></span>
-        <span style="font-size: 19px">发现</span>
-        <span>云村</span>
-        <span>视频</span> -->
         <van-tabbar route :fixed="false" active-color="red">
           <van-tabbar-item replace >我的</van-tabbar-item>
           <van-tabbar-item replace to="/find">发现</van-tabbar-item>
