@@ -13,7 +13,7 @@
             <span v-if="specialType === 0" style="margin-left: .2rem;">歌单</span>
             <span v-else-if="specialType === 100" style="margin-left: .2rem;">官方动态歌单</span>
           </div>
-          <div class="itemRight">
+          <div class="itemRight" style="justify-content: space-between">
             <svg class="icon" aria-hidden="true ">
               <use xlink:href="#icon-z31sousuo"></use>
             </svg>
@@ -173,6 +173,9 @@ export default {
   },
   beforeDestroy () {
     window.removeEventListener('scroll', this.handleScroll)
+  },
+  components: {
+    Music
   }
 }
 </script>
