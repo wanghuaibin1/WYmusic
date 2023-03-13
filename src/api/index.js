@@ -82,16 +82,6 @@ export const subscribeAPI = data => request({
 })
 
 /**
- * 登录
- * @param {*} params
- * @returns
- */
-// export const loginAPI = params => request({
-//   url: '/login/cellphone',
-//   params
-// })
-
-/**
  *  登录获取key
  * @returns
  */

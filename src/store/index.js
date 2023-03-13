@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import createPersistedState from 'vuex-persistedstate'
+// import createPersistedState from 'vuex-persistedstate'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -50,7 +50,7 @@ export default new Vuex.Store({
 
   },
   // 配置为 vuex 的插件
-  plugins: [createPersistedState()],
+  // plugins: [createPersistedState()],
   modules: {
   }
 })

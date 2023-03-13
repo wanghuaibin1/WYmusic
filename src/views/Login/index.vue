@@ -22,7 +22,7 @@
 <script>
 // 调用vuex里的mutations方法
 import { mapMutations } from 'vuex'
-import { loginAPI, keyAPI, createAPI, checkAPI, statusAPI } from '@/api'
+import { keyAPI, createAPI, checkAPI, statusAPI } from '@/api'
 export default {
   name: 'Log-in',
   data () {
@@ -36,14 +36,11 @@ export default {
   },
   methods: {
     ...mapMutations(['updataCookie', 'usernformation']), // 映射调用vuex中的方法保存token
-    async onSubmit () {
-      const { data: res } = await loginAPI({ phone: this.phone, password: Date.now() })
-      console.log(res)
-    },
     // 登录状态 解析cookie拿到用户数据保存在vuex中
     async statusApi (cookie = '') {
       const { data: res } = await statusAPI({ cookie, timerstamp: Date.now() })
       // console.log(JSON.stringify(res, null, 2))
+      console.log(res)
       this.usernformation(JSON.stringify(res, null, 2))
     },
     // 二维码登录 获取key
@@ -53,11 +50,12 @@ export default {
       const { data: key } = await keyAPI({ timerstamp: Date.now() })
       this.key = key.data.unikey
       // 二维码登录 获取base64
-      const { data: base } = await createAPI({ key: this.key, qrimg: true })
+      const { data: base } = await createAPI({ key: this.key, qrimg: true, timerstamp: Date.now() })
       this.base64 = base.data.qrimg
       // 二维码检测扫码状态接口
       const timer = setInterval(async () => {
         const { data: res } = await checkAPI({ key: this.key, timerstamp: Date.now() })
+        console.log(res)
         if (res.code === 800) {
           alert('二维码已过期,请重新获取')
           clearInterval(timer)
