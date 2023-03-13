@@ -69,7 +69,6 @@ export default {
     async bannerApi () {
       const { data: res } = await bannerAPI()
       this.banner = res.banners
-      console.log(JSON.parse(this.$store.state.user))
     },
     // 推荐歌单
     async perSonalizeApi () {

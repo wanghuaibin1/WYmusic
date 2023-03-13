@@ -1,6 +1,7 @@
 import Vue from 'vue'
-import { NavBar, Col, Row, Search, Swipe, SwipeItem, Icon, List, Cell, Grid, GridItem, Image as VanImage, Lazyload, Form, Field, Button, NoticeBar, Sticky, Popup, Loading, Toast, Tabbar, TabbarItem } from 'vant'
+import { NavBar, Col, Row, Search, Swipe, SwipeItem, Icon, List, Cell, Grid, GridItem, Image as VanImage, Lazyload, Form, Field, Button, NoticeBar, Sticky, Popup, Loading, Toast, Tabbar, TabbarItem, Circle } from 'vant'
 
+Vue.use(Circle)
 Vue.use(Toast)
 Vue.use(Loading)
 Vue.use(Popup)

@@ -17,7 +17,7 @@
       <div class="song">
         <div class="songItem" v-for="obj, index in track" :key="obj.id">
           <span class="songIndex">{{ index + 1 }}</span>
-          <div class="songName">
+          <div class="songName" @click="bofang(index)">
             <p>{{ obj.name }}</p>
             <p v-if="obj.ar.length === 0">{{ obj.ar[0].name + "—" + obj.al.name }} </p>
             <p v-else>{{ author(obj.ar) + "—" + obj.al.name }}</p>
@@ -39,6 +39,7 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 export default {
   name: 'Mu-sic',
   data () {
@@ -46,6 +47,7 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(['updataplayList', 'updataplayListIndex', 'updataBroadcast']),
     // 歌曲作者拼接
     author (obj) {
       const name = []
@@ -53,6 +55,11 @@ export default {
         return name.push(item.name)
       })
       return name.join('/')
+    },
+    bofang (index) {
+      this.updataplayList(this.track)
+      this.updataplayListIndex(index)
+      this.updataBroadcast(true)
     }
   },
   components: {},

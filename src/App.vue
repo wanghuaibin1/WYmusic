@@ -1,11 +1,19 @@
 <template>
   <div id="app">
     <router-view />
-
+    <playerMusic/>
   </div>
 
 </template>
+<script>
+import playerMusic from './components/SongSheet/playerMusic.vue'
+export default {
+  components: {
+    playerMusic
+  }
+}
 
+</script>
 <style lang="less" >
 *{
   box-sizing: border-box;
