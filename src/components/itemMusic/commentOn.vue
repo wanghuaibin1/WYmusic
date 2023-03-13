@@ -1,13 +1,13 @@
 <template>
+    <!-- 歌单评论 -->
   <div>
-    <router-view />
+{{ $route.query.id }}
   </div>
 </template>
 
 <script>
-// import MusicItem from '@/components/itemMusic/MusicItem.vue'
 export default {
-  name: 'Musi-c',
+  name: 'Comment-On',
   data () {
     return {
     }

@@ -1,4 +1,5 @@
 <template>
+  <!-- 歌曲底部播放组件 -->
   <div class="playerMusic">
     <div class="MusicLift">
       <div class="MusicImg" :style="{animationPlayState:(broadcast?'running':'paused')}">

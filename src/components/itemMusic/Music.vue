@@ -1,5 +1,5 @@
 <template>
-     <!-- 歌曲 -->
+     <!-- 歌单内歌曲 -->
      <div class="sheetSong" ref="itemMusic">
       <van-sticky :offset-top="50">
         <div class="broadcastSong">

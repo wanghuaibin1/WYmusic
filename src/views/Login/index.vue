@@ -40,12 +40,11 @@ export default {
     async statusApi (cookie = '') {
       const { data: res } = await statusAPI({ cookie, timerstamp: Date.now() })
       // console.log(JSON.stringify(res, null, 2))
-      console.log(res)
       this.usernformation(JSON.stringify(res, null, 2))
+      localStorage.setItem('cookie', res) // 放进本地
     },
     // 二维码登录 获取key
     async loginQRcode () {
-      // let timer
       this.k = 1
       const { data: key } = await keyAPI({ timerstamp: Date.now() })
       this.key = key.data.unikey
@@ -53,9 +52,17 @@ export default {
       const { data: base } = await createAPI({ key: this.key, qrimg: true, timerstamp: Date.now() })
       this.base64 = base.data.qrimg
       // 二维码检测扫码状态接口
+      let num = 0
       const timer = setInterval(async () => {
+        num++
+        if (num > 60 * 2) {
+          alert('请求超时')
+          clearInterval(timer)
+          this.key = ''
+          this.base64 = ''
+          this.k = 0
+        }
         const { data: res } = await checkAPI({ key: this.key, timerstamp: Date.now() })
-        console.log(res)
         if (res.code === 800) {
           alert('二维码已过期,请重新获取')
           clearInterval(timer)
@@ -77,7 +84,7 @@ export default {
           this.updataCookie(res.cookie) // 保存在vuex中
           this.$router.push('/')
         }
-      }, 3000)
+      }, 1000)
     }
   },
   components: {},

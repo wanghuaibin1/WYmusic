@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import store from '@/store'
+// import store from '@/store'
 Vue.use(VueRouter)
 
 const routes = [
@@ -21,7 +21,18 @@ const routes = [
   },
   {
     path: '/itemmusic',
-    component: () => import('@/components/itemMusic')
+    component: () => import('@/components/itemMusic'),
+    redirect: '/musicitem',
+    children: [
+      {
+        path: '/musicitem',
+        component: () => import('@/components/itemMusic/MusicItem.vue')
+      },
+      {
+        path: '/comment',
+        component: () => import('@/components/itemMusic/commentOn.vue')
+      }
+    ]
   },
   {
     path: '/login',
@@ -33,18 +44,18 @@ const router = new VueRouter({
   routes
 })
 // 全局路由守卫
-router.beforeEach((to, from, next) => {
-  // 判断是否有cookie值，没用就代表没登录，强制跳到登录页
-  const cookie = store.state.cookie
-  // 没用登录 判断去的页面是否是登录页，不是就强制跳到登录页
-  if (!cookie) {
-    if (to.path === '/login') {
-      next()
-    } else {
-      next('/login')
-    }
-  }
-  next()
-})
+// router.beforeEach((to, from, next) => {
+//   // 判断是否有cookie值，没用就代表没登录，强制跳到登录页
+//   const cookie = store.state.cookie
+//   // 没用登录 判断去的页面是否是登录页，不是就强制跳到登录页
+//   if (!cookie) {
+//     if (to.path === '/login') {
+//       next()
+//     } else {
+//       next('/login')
+//     }
+//   }
+//   next()
+// })
 
 export default router

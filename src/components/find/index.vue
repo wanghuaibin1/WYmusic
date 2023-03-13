@@ -6,8 +6,8 @@
                 <img style=" width: 100%;
                                     height: 100%;
                                     object-fit: cover;
-                                    padding: .2rem;
-                                    border-radius: .39rem;
+                                    padding: 10px;
+                                    border-radius: 19.5px;
                                   " :src="obj.pic" alt="" />
                 <span class="typeTitle">{{ obj.typeTitle }}</span>
             </van-swipe-item>
@@ -15,7 +15,7 @@
         <!-- 标签导航栏 -->
         <div class="labelBar">
             <span class="ic" v-for="item, index in icOn" :key="index">
-                <svg style="font-size: .5rem" class="icon" aria-hidden="true">
+                <svg style="font-size: 25px" class="icon" aria-hidden="true">
                     <use :xlink:href=item.icXlink></use>
                 </svg>
                 <span class="sp">{{ item.name }}</span>
@@ -25,7 +25,7 @@
         <div class="recommend-songSheet">
             <p class="title">推荐歌单
                 <span>
-                    <svg style="font-size: .5rem" class="icon" aria-hidden="true">
+                    <svg style="font-size: 25px" class="icon" aria-hidden="true">
                         <use xlink:href="#icon-fangxiangxia"></use>
                     </svg>
                 </span>
@@ -47,6 +47,7 @@
 <script>
 import { bannerAPI, personalizedAPI } from '@/api'
 import Song from '@/components/SongSheet'
+import { mapMutations } from 'vuex'
 
 export default {
   name: 'Fi-nd',
@@ -65,10 +66,12 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(['updataCookie']),
     // 轮播图
     async bannerApi () {
       const { data: res } = await bannerAPI()
       this.banner = res.banners
+      console.log(this.$store.state.user)
     },
     // 推荐歌单
     async perSonalizeApi () {
@@ -93,7 +96,7 @@ export default {
 </script>
 <style lang="less" scoped>
 .van-field__control {
-    border-radius: .2rem;
+    border-radius: 10px;
 }
 
 .van-search__content--round {
@@ -106,34 +109,34 @@ export default {
 
 .my-swipe .van-swipe-item {
     color: #fff;
-    font-size: .4rem;
-    line-height: 3rem;
+    font-size: 20px;
+    line-height: 150px;
     text-align: center;
     background-color: #39a9ed;
 }
 
 .my-swipe .van-swipe__track .van-swipe-item {
-    height: 3rem;
+    height: 150px;
     background-color: transparent;
 }
 
 .typeTitle {
     position: absolute;
-    bottom: .34rem;
-    right: .38rem;
-    height: .4rem;
-    width: 1.2rem;
+    bottom: 17px;
+    right: 19px;
+    height: 20px;
+    width: 60px;
     background-color: #fff;
     color: #000;
-    border-radius: .1rem;
-    line-height: .4rem;
-    font-size: .2rem;
+    border-radius: 5px;
+    line-height: 20px;
+    font-size: 10px;
 }
 
 .labelBar {
     display: flex;
     justify-content: space-around;
-    margin-top: .2rem;
+    margin-top: 10px;
 
     .ic {
         display: flex;
@@ -142,30 +145,30 @@ export default {
     }
 
     .sp {
-        font-size: .2rem;
+        font-size: 10px;
         color: #d2d2d2;
-        margin-top: .2rem;
+        margin-top: 10px;
         font-weight: 100;
         font-family: 楷体;
     }
 }
 
 .recommend-songSheet {
-    height: 4.5rem;
+    height: 225px;
     overflow: hidden;
 
     .title {
-        padding: 0.266667rem 0.24rem;
-        margin: 10px 0 0 0;
+        padding: 13.335px 12px;
+        margin: .2rem 0 0 0;
         background-color: rgba(0, 0, 0, 0);
         color: #ffffff;
-        font-size: 20px;
+        font-size: .4rem;
     }
 
     .songFence {
         display: flex;
         width: 100%;
-        height: 3.5rem;
+        height: 175px;
         overflow-x: auto;
 
     }

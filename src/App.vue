@@ -6,7 +6,7 @@
 
 </template>
 <script>
-import playerMusic from './components/SongSheet/playerMusic.vue'
+import playerMusic from './components/SongItem/playerMusic.vue'
 export default {
   components: {
     playerMusic
