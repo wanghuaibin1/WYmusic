@@ -1,6 +1,7 @@
 import Vue from 'vue'
-import { NavBar, Col, Row, Search, Swipe, SwipeItem, Icon, List, Cell, Grid, GridItem, Image as VanImage, Lazyload, Form, Field, Button, NoticeBar, Sticky, Popup, Loading, Toast, Tabbar, TabbarItem, Circle } from 'vant'
-
+import { NavBar, Col, Row, Search, Swipe, SwipeItem, Icon, List, Cell, Grid, GridItem, Image as VanImage, Lazyload, Form, Field, Button, NoticeBar, Sticky, Popup, Loading, Toast, Tabbar, TabbarItem, Circle, ShareSheet, Dialog } from 'vant'
+Vue.use(Dialog)
+Vue.use(ShareSheet)
 Vue.use(Circle)
 Vue.use(Toast)
 Vue.use(Loading)
@@ -22,7 +23,6 @@ Vue.use(Swipe)
 Vue.use(SwipeItem)
 Vue.use(Icon)
 Vue.use(Cell)
-
 Vue.use(Tabbar)
 Vue.use(TabbarItem)
 Vue.use(Lazyload, {

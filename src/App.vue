@@ -17,7 +17,7 @@ export default {
 <style lang="less" >
 *{
   box-sizing: border-box;
-  // margin: auto;
+  margin: 0;
   padding: auto;
 }
 .icon {

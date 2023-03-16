@@ -2,7 +2,7 @@
   <!-- 歌曲底部播放组件 -->
   <div class="playerMusic">
     <div class="MusicLift">
-      <div class="MusicImg" :style="{animationPlayState:(broadcast?'running':'paused')}">
+      <div class="MusicImg" :style="{animationPlayState:(!broadcast?'running':'paused')}">
         <img :src="playList[playListIndex].al.picUrl" alt="">
       </div>
       <div class="MusicItem">
@@ -12,18 +12,19 @@
     </div>
     <div class="MusicRigth">
       <van-circle v-model="currentRate" size="30px" :rate="rate" :color="gradientColor">
-        <van-icon size="20" :name="(broadcast?'pause':'play')" @click="broa"/>
+        <van-icon size="20" :name="(!broadcast?'pause':'play')" @click="broa"/>
       </van-circle>
       <svg class="icon" aria-hidden="true">
         <use xlink:href="#icon-yinleliebiao"></use>
       </svg>
     </div>
-    <audio ref="audio" :src="`https://music.163.com/song/media/outer/url?id=${playList[playListIndex].id} `"></audio>
+    <audio ref="audio" :src='songUrl'></audio>
   </div>
 </template>
 
 <script>
 import { mapMutations, mapState } from 'vuex'
+import { lyricAPI } from '@/api'
 export default {
   name: 'Player-Music',
   data () {
@@ -32,19 +33,25 @@ export default {
       gradientColor: {
         '0%': '#3fecff',
         '100%': '#6149f6'
-      }
+      },
+      lyric: '' // 歌曲歌词
     }
   },
   methods: {
     ...mapMutations(['updataBroadcast']),
     broa () {
-      if (!this.broadcast) {
+      // 底部播放按钮 判断是否在播放
+      if (this.$refs.audio.paused) {
         this.$refs.audio.play()
-        this.updataBroadcast(true)
+        this.updataBroadcast(false)
       } else {
         this.$refs.audio.pause()
-        this.updataBroadcast(false)
+        this.updataBroadcast(true)
       }
+    },
+    async lyricApi () {
+      const { data: res } = await lyricAPI({ id: this.playList[this.playListIndex].id })
+      console.log(res)
     }
   },
   components: {},
@@ -52,24 +59,32 @@ export default {
   watch: {
     playListIndex () {
       this.$refs.audio.autoplay = true
-      this.updataBroadcast(true)
+      this.updataBroadcast(false)
+      this.$store.dispatch('songUrlApi')
     },
     playList () {
-      if (this.broadcast) {
+      if (!this.broadcast) {
+        this.$store.dispatch('songUrlApi')
         this.$refs.audio.autoplay = true
-        this.updataBroadcast(true)
+        this.updataBroadcast(false)
+      } else {
+        this.$refs.audio.autoplay = false
       }
     },
     broadcast () {
-      if (this.broadcast) {
+      if (!this.broadcast) {
         this.$refs.audio.play()
+      } else {
+        this.$refs.audio.pause()
       }
     }
   },
   computed: {
-    ...mapState(['playList', 'playListIndex', 'broadcast', 'rate'])
+    ...mapState(['playList', 'playListIndex', 'broadcast', 'rate', 'songUrl'])
   },
-  created () { },
+  created () {
+    this.lyricApi()
+  },
   mounted () { }
 }
 </script>

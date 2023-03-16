@@ -1,17 +1,20 @@
     <!-- 歌单 头部 和 歌曲 -->
 <template>
   <div v-if="w">
-    <div :style="{ backgroundImage: 'url(' + (specialType === 100 ? Singing.backgroundCoverUrl : '') + ')' }" class="backImg">
+    <div :style="{ backgroundImage: 'url(' + (specialType === 100 ? Singing.backgroundCoverUrl : '') + ')' }"
+      class="backImg">
       <!-- 头部栏 -->
       <van-sticky>
         <div class="itemMusicTop" :style="{ backgroundColor: backgroundColor }">
           <!-- <img v-if="w" :src="Singing.backgroundCoverUrl" alt="" class="itemImg"> -->
-          <div class="itemLeft" style="width: 45%;">
+          <div class="itemLeft" style="width: 60%;">
             <svg class="icon" aria-hidden="true" @click="$router.back()">
               <use xlink:href="#icon-xitongfanhui"></use>
             </svg>
-            <span v-if="specialType === 0" style="margin-left: .2rem;">歌单</span>
-            <span v-else-if="specialType === 100" style="margin-left: .2rem;">官方动态歌单</span>
+            <van-notice-bar v-if="specialType === 100" scrollable text="官方动态歌单" />
+            <span v-else-if="specialType === 0&&q" style="margin-left: .2rem;">歌单</span>
+            <van-notice-bar v-else scrollable :text="Singing.name" />
+            <!-- <span v-else-if="specialType === 100" style="margin-left: .2rem;">官方动态歌单</span> -->
           </div>
           <div class="itemRight" style="justify-content: space-between">
             <svg class="icon" aria-hidden="true ">
@@ -50,7 +53,7 @@
 
             </div>
             <div class="algTags" v-if="Singing.algTags">
-              <span v-for="obj, index in Singing.algTags" :key="index">{{ obj  }}</span>
+              <span v-for="obj, index in Singing.algTags" :key="index">{{ obj }}</span>
             </div>
           </div>
         </div>
@@ -60,10 +63,6 @@
             <p>{{ Singing.name }}</p>
             <p>{{ Singing.updateFrequency }}</p>
           </div>
-        </div>
-        <!-- 其他歌单 -->
-        <div v-else>
-          {{ this.$toast('其他歌单') }}
         </div>
         <div class="description" @click="showPopup">
           <p>
@@ -89,13 +88,16 @@
       </div>
       <!-- 收藏 分享 -->
       <div class="itemIcon">
-        <span><van-icon name="share-o" />{{ Singing.shareCount }}</span>
-        <span @click="$router.push(`/comment?id=${id}`)"><van-icon name="chat-o" />{{ Singing.commentCount }}</span>
-        <span><van-icon name="add-o" />{{ formatNumber(Singing.subscribedCount) }}</span>
+        <span  @click="showShare = true"><van-icon name="share-o"/>{{ Singing.shareCount }}</span>
+        <span
+          @click="$router.push({ path: '/comment', query: { id, item: { coverImgUrl: Singing.coverImgUrl, name: Singing.name, nick: Singing.creator.nickname } } })"><van-icon
+            name="chat-o" />{{ Singing.commentCount }}</span>
+        <span style="background-color: red;"><van-icon name="add-o" />{{ formatNumber(Singing.subscribedCount) }}</span>
       </div>
     </div>
     <Music :track="track"></Music>
-    <div style="margin: auto;" v-if="track" aria-label="Orange and tan hamster running in a metal wheel" role="img" class="wheel-and-hamster">
+    <div style="margin: auto;" v-if="track" aria-label="Orange and tan hamster running in a metal wheel" role="img"
+      class="wheel-and-hamster">
       <div class="wheel"></div>
       <div class="hamster">
         <div class="hamster__body">
@@ -113,6 +115,7 @@
       </div>
       <div class="spoke"></div>
     </div>
+    <van-share-sheet v-model="showShare" title="立即分享给好友" :options="options" />
   </div>
   <van-loading v-else size="24px" vertical color="#0094ff"> 加载中...</van-loading>
 </template>
@@ -132,7 +135,16 @@ export default {
       // 歌单所有歌曲
       track: {},
       backgroundColor: '',
-      specialType: ''
+      specialType: '',
+      showShare: false,
+      options: [
+        { name: '微信', icon: 'wechat' },
+        { name: '微博', icon: 'weibo' },
+        { name: '复制链接', icon: 'link' },
+        { name: '分享海报', icon: 'poster' },
+        { name: '二维码', icon: 'qrcode' }
+      ],
+      q: true
     }
   },
   methods: {
@@ -144,6 +156,11 @@ export default {
       const { data: res } = await datailAPI({ id: this.id })
       this.Singing = res.playlist
       this.specialType = res.playlist.specialType
+
+      if (this.specialType === 300) {
+        this.$toast('此歌但暂时不能用')
+        this.$router.back()
+      }
       this.trackall()
       this.w = true
     },
@@ -171,7 +188,11 @@ export default {
       const scrollTop =
         window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
       // const offsetTop = document.querySelector('.sheetSong').offsetTop
-
+      if (scrollTop >= 100) {
+        this.q = false
+      } else {
+        this.q = true
+      }
       // 设置背景颜色的透明读
       if (scrollTop) {
         this.backgroundColor = `rgba(0, 0, 0,${scrollTop / (scrollTop + 40)})`
@@ -420,7 +441,7 @@ export default {
 .authority p:nth-child(2) {
   text-align: center;
   font-size: .2rem;
-  color: #cdb6b6;
+  color: #838383;
 }
 
 .backImg {
@@ -428,6 +449,7 @@ export default {
   background-size: cover;
   padding-bottom: .6rem;
 }
+
 .wheel-and-hamster {
   --dur: 1s;
   position: relative;
@@ -453,7 +475,7 @@ export default {
 }
 
 .wheel {
-  background: radial-gradient(100% 100% at center,hsla(0,0%,60%,0) 47.8%,hsl(0,0%,60%) 48%);
+  background: radial-gradient(100% 100% at center, hsla(0, 0%, 60%, 0) 47.8%, hsl(0, 0%, 60%) 48%);
   z-index: 2;
 }
 
@@ -463,16 +485,16 @@ export default {
   left: calc(50% - 3.5em);
   width: 7em;
   height: 3.75em;
-  transform: rotate(4deg) translate(-0.8em,1.85em);
+  transform: rotate(4deg) translate(-0.8em, 1.85em);
   transform-origin: 50% 0;
   z-index: 1;
 }
 
 .hamster__head {
   animation: hamsterHead var(--dur) ease-in-out infinite;
-  background: hsl(30,90%,55%);
+  background: hsl(30, 90%, 55%);
   border-radius: 70% 30% 0 100% / 40% 25% 25% 60%;
-  box-shadow: 0 -0.25em 0 hsl(30,90%,80%) inset,0.75em -1.55em 0 hsl(30,90%,90%) inset;
+  box-shadow: 0 -0.25em 0 hsl(30, 90%, 80%) inset, 0.75em -1.55em 0 hsl(30, 90%, 90%) inset;
   top: 0;
   left: -2em;
   width: 2.75em;
@@ -482,9 +504,9 @@ export default {
 
 .hamster__ear {
   animation: hamsterEar var(--dur) ease-in-out infinite;
-  background: hsl(0,90%,85%);
+  background: hsl(0, 90%, 85%);
   border-radius: 50%;
-  box-shadow: -0.25em 0 hsl(30,90%,55%) inset;
+  box-shadow: -0.25em 0 hsl(30, 90%, 55%) inset;
   top: -0.25em;
   right: -0.25em;
   width: 0.75em;
@@ -494,7 +516,7 @@ export default {
 
 .hamster__eye {
   animation: hamsterEye var(--dur) linear infinite;
-  background-color: hsl(0,0%,0%);
+  background-color: hsl(0, 0%, 0%);
   border-radius: 50%;
   top: 0.375em;
   left: 1.25em;
@@ -503,7 +525,7 @@ export default {
 }
 
 .hamster__nose {
-  background: hsl(0,90%,75%);
+  background: hsl(0, 90%, 75%);
   border-radius: 35% 65% 85% 15% / 70% 50% 50% 30%;
   top: 0.75em;
   left: 0;
@@ -513,9 +535,9 @@ export default {
 
 .hamster__body {
   animation: hamsterBody var(--dur) ease-in-out infinite;
-  background: hsl(30,90%,90%);
+  background: hsl(30, 90%, 90%);
   border-radius: 50% 30% 50% 30% / 15% 60% 40% 40%;
-  box-shadow: 0.1em 0.75em 0 hsl(30,90%,55%) inset,0.15em -0.5em 0 hsl(30,90%,80%) inset;
+  box-shadow: 0.1em 0.75em 0 hsl(30, 90%, 55%) inset, 0.15em -0.5em 0 hsl(30, 90%, 80%) inset;
   top: 0.25em;
   left: 2em;
   width: 4.5em;
@@ -526,7 +548,7 @@ export default {
 
 .hamster__limb--fr,
 .hamster__limb--fl {
-  clip-path: polygon(0 0,100% 0,70% 80%,60% 100%,0% 100%,40% 80%);
+  clip-path: polygon(0 0, 100% 0, 70% 80%, 60% 100%, 0% 100%, 40% 80%);
   top: 2em;
   left: 0.5em;
   width: 1em;
@@ -536,20 +558,20 @@ export default {
 
 .hamster__limb--fr {
   animation: hamsterFRLimb var(--dur) linear infinite;
-  background: linear-gradient(hsl(30,90%,80%) 80%,hsl(0,90%,75%) 80%);
+  background: linear-gradient(hsl(30, 90%, 80%) 80%, hsl(0, 90%, 75%) 80%);
   transform: rotate(15deg) translateZ(-1px);
 }
 
 .hamster__limb--fl {
   animation: hamsterFLLimb var(--dur) linear infinite;
-  background: linear-gradient(hsl(30,90%,90%) 80%,hsl(0,90%,85%) 80%);
+  background: linear-gradient(hsl(30, 90%, 90%) 80%, hsl(0, 90%, 85%) 80%);
   transform: rotate(15deg);
 }
 
 .hamster__limb--br,
 .hamster__limb--bl {
   border-radius: 0.75em 0.75em 0 0;
-  clip-path: polygon(0 0,100% 0,100% 30%,70% 90%,70% 100%,30% 100%,40% 90%,0% 30%);
+  clip-path: polygon(0 0, 100% 0, 100% 30%, 70% 90%, 70% 100%, 30% 100%, 40% 90%, 0% 30%);
   top: 1em;
   left: 2.8em;
   width: 1.5em;
@@ -559,21 +581,21 @@ export default {
 
 .hamster__limb--br {
   animation: hamsterBRLimb var(--dur) linear infinite;
-  background: linear-gradient(hsl(30,90%,80%) 90%,hsl(0,90%,75%) 90%);
+  background: linear-gradient(hsl(30, 90%, 80%) 90%, hsl(0, 90%, 75%) 90%);
   transform: rotate(-25deg) translateZ(-1px);
 }
 
 .hamster__limb--bl {
   animation: hamsterBLLimb var(--dur) linear infinite;
-  background: linear-gradient(hsl(30,90%,90%) 90%,hsl(0,90%,85%) 90%);
+  background: linear-gradient(hsl(30, 90%, 90%) 90%, hsl(0, 90%, 85%) 90%);
   transform: rotate(-25deg);
 }
 
 .hamster__tail {
   animation: hamsterTail var(--dur) linear infinite;
-  background: hsl(0,90%,85%);
+  background: hsl(0, 90%, 85%);
   border-radius: 0.25em 50% 50% 0.25em;
-  box-shadow: 0 -0.2em 0 hsl(0,90%,75%) inset;
+  box-shadow: 0 -0.2em 0 hsl(0, 90%, 75%) inset;
   top: 1.5em;
   right: -0.5em;
   width: 1em;
@@ -584,32 +606,45 @@ export default {
 
 .spoke {
   animation: spoke var(--dur) linear infinite;
-  background: radial-gradient(100% 100% at center,hsl(0,0%,60%) 4.8%,hsla(0,0%,60%,0) 5%),linear-gradient(hsla(0,0%,55%,0) 46.9%,hsl(0,0%,65%) 47% 52.9%,hsla(0,0%,65%,0) 53%) 50% 50% / 99% 99% no-repeat;
+  background: radial-gradient(100% 100% at center, hsl(0, 0%, 60%) 4.8%, hsla(0, 0%, 60%, 0) 5%), linear-gradient(hsla(0, 0%, 55%, 0) 46.9%, hsl(0, 0%, 65%) 47% 52.9%, hsla(0, 0%, 65%, 0) 53%) 50% 50% / 99% 99% no-repeat;
 }
 
 /* Animations */
 @keyframes hamster {
-  from, to {
-    transform: rotate(4deg) translate(-0.8em,1.85em);
+
+  from,
+  to {
+    transform: rotate(4deg) translate(-0.8em, 1.85em);
   }
 
   50% {
-    transform: rotate(0) translate(-0.8em,1.85em);
+    transform: rotate(0) translate(-0.8em, 1.85em);
   }
 }
 
 @keyframes hamsterHead {
-  from, 25%, 50%, 75%, to {
+
+  from,
+  25%,
+  50%,
+  75%,
+  to {
     transform: rotate(0);
   }
 
-  12.5%, 37.5%, 62.5%, 87.5% {
+  12.5%,
+  37.5%,
+  62.5%,
+  87.5% {
     transform: rotate(8deg);
   }
 }
 
 @keyframes hamsterEye {
-  from, 90%, to {
+
+  from,
+  90%,
+  to {
     transform: scaleY(1);
   }
 
@@ -619,71 +654,127 @@ export default {
 }
 
 @keyframes hamsterEar {
-  from, 25%, 50%, 75%, to {
+
+  from,
+  25%,
+  50%,
+  75%,
+  to {
     transform: rotate(0);
   }
 
-  12.5%, 37.5%, 62.5%, 87.5% {
+  12.5%,
+  37.5%,
+  62.5%,
+  87.5% {
     transform: rotate(12deg);
   }
 }
 
 @keyframes hamsterBody {
-  from, 25%, 50%, 75%, to {
+
+  from,
+  25%,
+  50%,
+  75%,
+  to {
     transform: rotate(0);
   }
 
-  12.5%, 37.5%, 62.5%, 87.5% {
+  12.5%,
+  37.5%,
+  62.5%,
+  87.5% {
     transform: rotate(-2deg);
   }
 }
 
 @keyframes hamsterFRLimb {
-  from, 25%, 50%, 75%, to {
+
+  from,
+  25%,
+  50%,
+  75%,
+  to {
     transform: rotate(50deg) translateZ(-1px);
   }
 
-  12.5%, 37.5%, 62.5%, 87.5% {
+  12.5%,
+  37.5%,
+  62.5%,
+  87.5% {
     transform: rotate(-30deg) translateZ(-1px);
   }
 }
 
 @keyframes hamsterFLLimb {
-  from, 25%, 50%, 75%, to {
+
+  from,
+  25%,
+  50%,
+  75%,
+  to {
     transform: rotate(-30deg);
   }
 
-  12.5%, 37.5%, 62.5%, 87.5% {
+  12.5%,
+  37.5%,
+  62.5%,
+  87.5% {
     transform: rotate(50deg);
   }
 }
 
 @keyframes hamsterBRLimb {
-  from, 25%, 50%, 75%, to {
+
+  from,
+  25%,
+  50%,
+  75%,
+  to {
     transform: rotate(-60deg) translateZ(-1px);
   }
 
-  12.5%, 37.5%, 62.5%, 87.5% {
+  12.5%,
+  37.5%,
+  62.5%,
+  87.5% {
     transform: rotate(20deg) translateZ(-1px);
   }
 }
 
 @keyframes hamsterBLLimb {
-  from, 25%, 50%, 75%, to {
+
+  from,
+  25%,
+  50%,
+  75%,
+  to {
     transform: rotate(20deg);
   }
 
-  12.5%, 37.5%, 62.5%, 87.5% {
+  12.5%,
+  37.5%,
+  62.5%,
+  87.5% {
     transform: rotate(-60deg);
   }
 }
 
 @keyframes hamsterTail {
-  from, 25%, 50%, 75%, to {
+
+  from,
+  25%,
+  50%,
+  75%,
+  to {
     transform: rotate(30deg) translateZ(-1px);
   }
 
-  12.5%, 37.5%, 62.5%, 87.5% {
+  12.5%,
+  37.5%,
+  62.5%,
+  87.5% {
     transform: rotate(10deg) translateZ(-1px);
   }
 }
@@ -696,5 +787,9 @@ export default {
   to {
     transform: rotate(-1turn);
   }
+}
+.van-notice-bar{
+  width: 100%;
+  background-color: inherit;
 }
 </style>

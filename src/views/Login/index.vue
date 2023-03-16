@@ -36,12 +36,12 @@ export default {
   },
   methods: {
     ...mapMutations(['updataCookie', 'usernformation']), // 映射调用vuex中的方法保存token
-    // 登录状态 解析cookie拿到用户数据保存在vuex中
+    // 刷新登录 解析cookie拿到用户数据保存在vuex中
     async statusApi (cookie = '') {
-      const { data: res } = await statusAPI({ cookie, timerstamp: Date.now() })
-      // console.log(JSON.stringify(res, null, 2))
+      const res = await statusAPI({ cookie, timerstamp: Date.now() })
+      if (!res.code === 200) return
       this.usernformation(JSON.stringify(res, null, 2))
-      localStorage.setItem('cookie', res) // 放进本地
+      // this.usernformation(res.data.data)
     },
     // 二维码登录 获取key
     async loginQRcode () {
@@ -61,6 +61,7 @@ export default {
           this.key = ''
           this.base64 = ''
           this.k = 0
+          return
         }
         const { data: res } = await checkAPI({ key: this.key, timerstamp: Date.now() })
         if (res.code === 800) {
@@ -78,9 +79,9 @@ export default {
         } else if (res.code === 803) {
         // 登录成功
           clearInterval(timer) // 清除定时器
-          alert('授权登录成功')
+          // alert('授权登录成功')
+          localStorage.setItem('cookie', res.cookie) // 放进本地
           this.statusApi(res.cookie) // 检查登录状态
-          // this.cookies = res.cookie
           this.updataCookie(res.cookie) // 保存在vuex中
           this.$router.push('/')
         }

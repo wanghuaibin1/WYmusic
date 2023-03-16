@@ -30,15 +30,16 @@
                     </svg>
                 </span>
             </p>
+            <keep-alive>
+
             <lazy-component>
-                <keep-alive>
                     <div class="songFence" v-if="w">
                         <Song v-for="obj in persoan" :key="obj.id" :picUrl="obj.picUrl" :name="obj.name"
                             :playCount="obj.playCount" :id="obj.id" />
                     </div>
-                </keep-alive>
-
             </lazy-component>
+        </keep-alive>
+
         </div>
 
     </div>
@@ -71,7 +72,6 @@ export default {
     async bannerApi () {
       const { data: res } = await bannerAPI()
       this.banner = res.banners
-      console.log(this.$store.state.user)
     },
     // 推荐歌单
     async perSonalizeApi () {

@@ -1,7 +1,7 @@
 <template>
      <!-- 歌单内歌曲 -->
      <div class="sheetSong" ref="itemMusic">
-      <van-sticky :offset-top="50">
+      <van-sticky  :offset-top="50">
         <div class="broadcastSong">
           <div class="songLift">
             <span><van-icon size=".4rem" color="red" name="play-circle" /></span>
@@ -59,7 +59,7 @@ export default {
     bofang (index) {
       this.updataplayList(this.track)
       this.updataplayListIndex(index)
-      this.updataBroadcast(true)
+      this.updataBroadcast(false)
     }
   },
   components: {},
@@ -71,6 +71,9 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+[v-cloak]{
+  display: none;
+}
 .sheetSong {
   width: 100%;
   background-color: #ffffff;

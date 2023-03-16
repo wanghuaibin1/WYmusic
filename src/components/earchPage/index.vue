@@ -151,7 +151,18 @@ export default {
   created () {
     this.searHot()
   },
-  mounted () {}
+  directives: {
+    fbin: {
+      bind (element, binding) {
+      },
+      inserted (element, binding) {
+        element.focus()
+      },
+      update (element, binding) {
+        element.focus()
+      }
+    }
+  }
 }
 </script>
 <style lang="less" scoped>

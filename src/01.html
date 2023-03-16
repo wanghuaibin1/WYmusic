@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .box {
+            transition: all .4s inherit;
+
+        }
+.st0{
+    animation: move 3s infinite  linear;
+
+}
+#pathSecond {
+  stroke-dashoffset: 0;
+  animation: move 3s infinite  linear;
+}
+@keyframes move {
+  0%{
+    stroke-dasharray: 0, 600px;
+    opacity: 1;
+    stroke-width: 3px
+  }
+  100%{
+    stroke-dasharray: 600px, 0px;
+    opacity: 0;
+  }
+}
+
+    </style>
+</head>
+
+<body>
+    <svg width="180" height="50" version="1.1"
+    xmlns="http://www.w3.org/2000/svg">
+ <path id="pathSecond" fill="none" stroke="rgba(0,0,0,0.8)"
+       stroke-width="2px"
+       d="M73.73,24.5c0,0,2.78-21.26-23.75-16.46
+       c0,0-11.12-12.63-25.01-5.81c0,0-11.12,4.8-8.84,16.67
+c0,0-13.81-2.27-16.13,13.39c0,0-3.07,10.67,10.32,16.71h180.02" />
+</svg>
+</body>
+
+</html>

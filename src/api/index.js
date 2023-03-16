@@ -81,6 +81,11 @@ export const subscribeAPI = data => request({
   data
 })
 
+export const playlistAPI = params => request({
+  url: '/comment/playlist',
+  params
+})
+
 /**
  *  登录获取key
  * @returns
@@ -112,11 +117,48 @@ export const checkAPI = params => request({
 })
 
 /**
- * 登录状态
+ * 刷新登录
  * @param {*} params
  * @returns
  */
 export const statusAPI = params => request({
   url: '/login/status',
+  params
+})
+
+/**
+ *
+ * @returns 退出登录
+ */
+export const logout = () => request({
+  url: '/logout'
+})
+/**
+ * 获取用户详情
+ * @param {*} params  用户id
+ * @returns
+ */
+export const uidAPI = params => request({
+  url: '/user/detail',
+  params
+})
+
+/**
+ * 获取音乐 url
+ * @param {*} params 歌曲id 播放音质
+ * @returns
+ */
+export const songUrlAPI = params => request({
+  url: '/song/url/v1',
+  params
+})
+
+/**
+ * 获取歌词
+ * @param {歌曲id} params
+ * @returns
+ */
+export const lyricAPI = params => request({
+  url: '/lyric',
   params
 })
