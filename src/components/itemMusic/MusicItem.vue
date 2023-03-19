@@ -96,7 +96,7 @@
       </div>
     </div>
     <Music :track="track"></Music>
-    <div style="margin: auto;" v-if="track" aria-label="Orange and tan hamster running in a metal wheel" role="img"
+    <div style="margin: auto;" v-if="Object.keys(track).length === 0" aria-label="Orange and tan hamster running in a metal wheel" role="img"
       class="wheel-and-hamster">
       <div class="wheel"></div>
       <div class="hamster">

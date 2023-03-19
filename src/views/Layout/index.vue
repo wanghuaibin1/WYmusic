@@ -31,15 +31,15 @@
         <div class="userTop">
           <span>个人主页</span>
           <el-button type="text" @click="open"><i class="el-icon-switch-button"></i>退出</el-button>
-          <img class="userbackImg" :src="user.profile.backgroundUrl" alt="">
+          <img class="userbackImg" :src="user.data.profile.backgroundUrl" alt="">
         </div>
         <div class="userInfo">
           <div class="info">
             <!-- 头像 昵称 -->
             <div class="userhead">
-              <img :src="user.profile.avatarUrl" alt="">
+              <img :src="user.data.profile.avatarUrl" alt="">
               <div style="margin-left: 10px;">
-                <p style="line-height: 25px;font-size: 20px;margin: 5px 0;">{{ user.profile.nickname }}</p>
+                <p style="line-height: 25px;font-size: 20px;margin: 5px 0;">{{ user.data.profile.nickname }}</p>
                 <p style="line-height: 15px;font-size: 10px;font-weight: 100;">IP属地：四川</p>
               </div>
             </div>
@@ -78,11 +78,6 @@ export default {
   },
   methods: {
     ...mapActions(['resetState']),
-    // 用户信息
-    async uidApi () {
-      // const { data: res } = await uidAPI({ uid: this.user.data.account.id })
-      // console.log(res)
-    },
     // 退出登录
     open () {
       Dialog.confirm({
@@ -115,11 +110,8 @@ export default {
   watch: {},
   computed: {},
   created () {
-    this.uidApi()
   },
-  mounted () {
-    console.log(this.user)
-  }
+  mounted () { }
 }
 </script>
 <style lang="less" scoped>

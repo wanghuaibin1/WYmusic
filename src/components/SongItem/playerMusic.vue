@@ -1,7 +1,7 @@
 <template>
   <!-- 歌曲底部播放组件 -->
   <div class="playerMusic">
-    <div class="MusicLift">
+    <div class="MusicLift" @click="updateSongDetails">
       <div class="MusicImg" :style="{animationPlayState:(!broadcast?'running':'paused')}">
         <img :src="playList[playListIndex].al.picUrl" alt="">
       </div>
@@ -19,12 +19,14 @@
       </svg>
     </div>
     <audio ref="audio" :src='songUrl'></audio>
+    <van-popup v-model="SongDetails" position="right" :style="{ height: '100%', width: '100%' }" >
+<button @click="$store.state.SongDetails=false">hhh</button>
+      </van-popup>
   </div>
 </template>
 
 <script>
 import { mapMutations, mapState } from 'vuex'
-import { lyricAPI } from '@/api'
 export default {
   name: 'Player-Music',
   data () {
@@ -38,7 +40,7 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(['updataBroadcast']),
+    ...mapMutations(['updataBroadcast', 'updateSongDetails']),
     broa () {
       // 底部播放按钮 判断是否在播放
       if (this.$refs.audio.paused) {
@@ -48,10 +50,6 @@ export default {
         this.$refs.audio.pause()
         this.updataBroadcast(true)
       }
-    },
-    async lyricApi () {
-      const { data: res } = await lyricAPI({ id: this.playList[this.playListIndex].id })
-      console.log(res)
     }
   },
   components: {},
@@ -80,10 +78,9 @@ export default {
     }
   },
   computed: {
-    ...mapState(['playList', 'playListIndex', 'broadcast', 'rate', 'songUrl'])
+    ...mapState(['playList', 'playListIndex', 'broadcast', 'rate', 'songUrl', 'SongDetails'])
   },
   created () {
-    this.lyricApi()
   },
   mounted () { }
 }

@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <router-view />
-    <playerMusic/>
+    <playerMusic v-if="$store.state.musicBroadcast"/>
   </div>
 
 </template>

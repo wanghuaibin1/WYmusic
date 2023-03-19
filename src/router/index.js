@@ -45,15 +45,25 @@ const router = new VueRouter({
 })
 // 全局路由守卫
 router.beforeEach((to, from, next) => {
-  // 判断是否有cookie值，没用就代表没登录，强制跳到登录页
   const cookie = store.state.cookie
-  // 没用登录 判断去的页面是否是登录页，不是就强制跳到登录页
-  if (!cookie) {
+  if (cookie) {
+    if (!store.state.user) {
+      store.dispatch('userItem')
+    }
+    next()
+  } else {
+    console.log(2)
     if (to.path === '/login') {
       next()
     } else {
       next('/login')
     }
+  }
+  if (to.path === '/login') {
+    store.commit('updataMusicBroadcast', false)
+    next()
+  } else {
+    store.commit('updataMusicBroadcast', true)
   }
   next()
 })

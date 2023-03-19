@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { songUrlAPI } from '@/api'
-// import createPersistedState from 'vuex-persistedstate'
+import createPersistedState from 'vuex-persistedstate'
 Vue.use(Vuex)
 const getDefaultState = () => {
   return {
@@ -19,8 +19,9 @@ const getDefaultState = () => {
     rate: 50, // 播放按钮  环形进度
     songUrl: 'http://m701.music.126.net/20230316160237/bd5fcaf319dba5f67500be3d68bda964/jdymusic/obj/wo3DlMOGwrbDjj7DisKw/4212514818/758a/87d3/2a91/c93f9324ee9c9c028bfb712192156b05.mp3', // 歌曲url
     broadcast: true, // 播放/暂定切换
-    playListIndex: 0 // 默认播放下标
-    // 初始状态
+    playListIndex: 0, // 默认播放下标
+    musicBroadcast: true, // 底部播放栏显示与隐藏
+    SongDetails: false // 歌曲详情
   }
 }
 export default new Vuex.Store({
@@ -37,7 +38,7 @@ export default new Vuex.Store({
     },
     // 改变用户信息
     usernformation (state, val) {
-      state.user = JSON.parse(val)
+      state.user = val
     },
     // 改变播放状态
     updataBroadcast (state, val) {
@@ -54,6 +55,12 @@ export default new Vuex.Store({
     // 改变当前播放音乐url
     updataSongUrl (state, val) {
       state.songUrl = val
+    },
+    updataMusicBroadcast (state, val) {
+      state.musicBroadcast = val
+    },
+    updateSongDetails (state) {
+      state.SongDetails = !state.SongDetails
     }
   },
   actions: {
@@ -64,10 +71,23 @@ export default new Vuex.Store({
     async songUrlApi (context) {
       const { data: res } = await songUrlAPI({ id: context.state.playList[context.state.playListIndex].id, level: 'standard' })
       context.commit('updataSongUrl', res.data[0].url)
+    },
+    // 用户信息
+    userItem (context) {
+      const user = JSON.parse(localStorage.getItem('user'))
+      context.commit('usernformation', user)
     }
   },
   // 配置为 vuex 的插件
-  // plugins: [createPersistedState()],
+  plugins: [createPersistedState({
+    storage: window.localStorage,
+    reducer (val) {
+      return {
+        cookie: val.cookie,
+        user: val.user
+      }
+    }
+  })],
   modules: {
   }
 })

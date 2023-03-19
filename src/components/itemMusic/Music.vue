@@ -1,7 +1,7 @@
 <template>
      <!-- 歌单内歌曲 -->
-     <div class="sheetSong" ref="itemMusic">
-      <van-sticky  :offset-top="50">
+     <div class="sheetSong" ref="itemMusic" v-if="Object.keys(track).length !== 0">
+      <van-sticky  :offset-top="50"  >
         <div class="broadcastSong">
           <div class="songLift">
             <span><van-icon size=".4rem" color="red" name="play-circle" /></span>
@@ -63,7 +63,11 @@ export default {
     }
   },
   components: {},
-  props: ['track'],
+  props: {
+    track: {
+      default: false
+    }
+  },
   watch: {},
   computed: {},
   created () {},
@@ -103,7 +107,7 @@ export default {
   }
 
   .song {
-
+padding-bottom: 70px;
     .songItem {
       height: 50px;
       line-height: 50px;
