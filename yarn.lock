@@ -5428,6 +5428,11 @@ qs@6.11.0:
   dependencies:
     side-channel "^1.0.4"
 
+quantize@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.npmmirror.com/quantize/-/quantize-1.0.2.tgz#d25ac200a77b6d70f40127ca171a10e33c8546de"
+  integrity sha512-25P7wI2UoDbIQsQp50ARkt+5pwPsOq7G/BqvT5xAbapnRoNWMN8/p55H9TXd5MuENiJnm5XICB2H2aDZGwts7w==
+
 queue-microtask@^1.2.2:
   version "1.2.3"
   resolved "https://registry.npmmirror.com/queue-microtask/-/queue-microtask-1.2.3.tgz#4929228bbc724dfac43e0efb058caf7b6cfb6243"
@@ -5454,6 +5459,13 @@ raw-body@2.5.1:
     http-errors "2.0.0"
     iconv-lite "0.4.24"
     unpipe "1.0.0"
+
+react-img-contrast@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.npmmirror.com/react-img-contrast/-/react-img-contrast-2.2.0.tgz#ffa74e960a247355d0d8bb0e806181c2b0e2bccc"
+  integrity sha512-fhKfVoR92DrngGkYz1FlnOz/pSX/9aIKc/LACrhTKLJaQSNpdpKycp48mnnNHYbg4P80Ih/7Udo30NNg2Y14Wg==
+  dependencies:
+    quantize "^1.0.2"
 
 read-pkg-up@^7.0.1:
   version "7.0.1"

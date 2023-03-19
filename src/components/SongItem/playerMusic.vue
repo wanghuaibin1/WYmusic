@@ -2,7 +2,7 @@
   <!-- 歌曲底部播放组件 -->
   <div class="playerMusic">
     <div class="MusicLift" @click="updateSongDetails">
-      <div class="MusicImg" :style="{animationPlayState:(!broadcast?'running':'paused')}">
+      <div class="MusicImg" :style="{ animationPlayState: (!broadcast ? 'running' : 'paused') }">
         <img :src="playList[playListIndex].al.picUrl" alt="">
       </div>
       <div class="MusicItem">
@@ -12,21 +12,22 @@
     </div>
     <div class="MusicRigth">
       <van-circle v-model="currentRate" size="30px" :rate="rate" :color="gradientColor">
-        <van-icon size="20" :name="(!broadcast?'pause':'play')" @click="broa"/>
+        <van-icon size="20" :name="(!broadcast ? 'pause' : 'play')" @click="broa" />
       </van-circle>
       <svg class="icon" aria-hidden="true">
         <use xlink:href="#icon-yinleliebiao"></use>
       </svg>
     </div>
     <audio ref="audio" :src='songUrl'></audio>
-    <van-popup v-model="SongDetails" position="right" :style="{ height: '100%', width: '100%' }" >
-<button @click="$store.state.SongDetails=false">hhh</button>
-      </van-popup>
+    <van-popup v-model="SongDetails" position="right" :style="{ height: '100%', width: '100%' }">
+      <songDate />
+    </van-popup>
   </div>
 </template>
 
 <script>
 import { mapMutations, mapState } from 'vuex'
+import songDate from '@/components/SongItem/songDetails.vue'
 export default {
   name: 'Player-Music',
   data () {
@@ -52,7 +53,9 @@ export default {
       }
     }
   },
-  components: {},
+  components: {
+    songDate
+  },
   props: {},
   watch: {
     playListIndex () {
@@ -111,7 +114,8 @@ export default {
       background-color: black;
       padding: 10px;
       margin-left: 10px;
-      animation:myfirst 4s linear infinite;
+      animation: myfirst 4s linear infinite;
+
       // animation-play-state:paused
       img {
         width: 100%;
@@ -122,11 +126,12 @@ export default {
 
     @keyframes myfirst {
       from {
-       transform: rotate(0);
+        transform: rotate(0);
       }
 
       to {
-        transform: rotate(360deg);      }
+        transform: rotate(360deg);
+      }
     }
 
     .MusicItem {
@@ -136,7 +141,8 @@ export default {
         width: 190px;
         margin: 0;
       }
-      .zz{
+
+      .zz {
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;

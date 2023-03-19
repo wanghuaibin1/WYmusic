@@ -1,8 +1,9 @@
     <!-- 歌单 头部 和 歌曲 -->
 <template>
   <div v-if="w">
-    <div :style="{ backgroundImage: 'url(' + (specialType === 100 ? Singing.backgroundCoverUrl : '') + ')' }"
+    <div :style="{ backgroundImage: 'url(' + (specialType === 100 ? Singing.backgroundCoverUrl : '') + ')',backgroundColor:'rgb('+backColor+')' }"
       class="backImg">
+      <!-- <div class="itemImg" :style="{ backgroundImage: 'url('+Singing.coverImgUrl+')' }"></div> -->
       <!-- 头部栏 -->
       <van-sticky>
         <div class="itemMusicTop" :style="{ backgroundColor: backgroundColor }">
@@ -30,7 +31,7 @@
       <div style="padding: 10px 20px;">
         <!-- 用户歌单 -->
         <div v-if="specialType === 0">
-          <div style="width: 40%;position: relative;float: left;" @click="showPopup">
+          <div class="img" style="width: 40%;position: relative;float: left;" @click="showPopup">
             <van-image width="100%" fit="contain" :src="Singing.coverImgUrl" lazy-load>
             </van-image>
             <span class="playbackVolume">
@@ -71,7 +72,7 @@
           <van-icon name="arrow" :size="20" />
         </div>
         <!-- 遮盖层 -->
-        <van-popup v-model="show" @click="show = false">
+        <van-popup :style="{'--backclor':backColor}" v-model="show" @click="show = false" overlay-class='mm'>
           <div class="songdetailed">
             <div>
               <van-image width="200px" height="200px" fit="cover" :src="Singing.coverImgUrl" lazy-load />
@@ -123,6 +124,7 @@
 <script>
 import { datailAPI, trackAllAPI } from '@/api'
 import Music from '@/components/itemMusic/Music.vue'
+import { getPalette } from 'react-img-contrast'
 export default {
   name: 'Item-muusic',
   data () {
@@ -144,7 +146,8 @@ export default {
         { name: '分享海报', icon: 'poster' },
         { name: '二维码', icon: 'qrcode' }
       ],
-      q: true
+      q: true,
+      backColor: ''
     }
   },
   methods: {
@@ -157,6 +160,14 @@ export default {
       this.Singing = res.playlist
       this.specialType = res.playlist.specialType
 
+      // 获取图片主题色
+      const backColor = await getPalette({
+        imgSrc: this.Singing.coverImgUrl,
+        colorCount: 2,
+        quality: 1
+      })
+      this.backColor = backColor[0].toString()
+      console.log(backColor)
       if (this.specialType === 300) {
         this.$toast('此歌但暂时不能用')
         this.$router.back()
@@ -274,19 +285,19 @@ export default {
 
   }
 
-  .itemImg {
-    z-index: -1;
-    width: 100%;
-    height: 9rem;
+}
+.itemImg{
     position: absolute;
     z-index: -1;
-    position: fixed;
     top: 0;
     left: 0;
-    filter: blur(.6rem);
+    right: 0;
+    bottom: 0;
+    filter: blur(50px);
+    transform: scale(3);
+    width: 100%;
+    height: 100%;
   }
-}
-
 .avatarUrl {
   display: flex;
   justify-content: flex-start;
@@ -368,12 +379,11 @@ export default {
 .van-popup--center {
   width: 100%;
   height: 100%;
-  background-color: rgb(147 115 115 / 1);
+  background-color:rgb(var(--backclor));
   padding: .2rem .5rem;
 
   .songdetailed {
     padding-top: 1rem;
-
     text-align: center;
 
     .itemFm {
