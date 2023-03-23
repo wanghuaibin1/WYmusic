@@ -7,7 +7,7 @@
       </div>
       <div class="MusicItem">
         <p class="zz">{{ playList[playListIndex].name }}</p>
-        <p class="zz">xxxxxx</p>
+        <p class="zz">{{ playList[playListIndex].ar[0].name }}</p>
       </div>
     </div>
     <div class="MusicRigth">
@@ -20,7 +20,9 @@
     </div>
     <audio ref="audio" :src='songUrl'></audio>
     <van-popup v-model="SongDetails" position="right" :style="{ height: '100%', width: '100%' }">
-      <songDate />
+      <keep-alive>
+      <songDate :musicIt="playList[playListIndex]" />
+    </keep-alive>
     </van-popup>
   </div>
 </template>

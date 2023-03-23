@@ -458,8 +458,11 @@ export default {
   background-repeat: no-repeat;
   background-size: cover;
   padding-bottom: .6rem;
-}
 
+}
+/deep/.van-sticky--fixed{
+    z-index: 0;
+  }
 .wheel-and-hamster {
   --dur: 1s;
   position: relative;

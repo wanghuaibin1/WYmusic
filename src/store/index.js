@@ -10,14 +10,17 @@ const getDefaultState = () => {
     playList: [
       {
         al: {
-          picUrl: 'https://p2.music.126.net/DEkk-OIlzDVxsoo1tW-Dug==/19035844811868074.jpg'
+          picUrl: 'https://p2.music.126.net/KS0TddHKX8c3atG3CkmdUw==/109951166264542938.jpg'
         },
-        name: '落下(いっぱつにゅうこんver.)',
-        id: 1997537240
+        ar: [
+          { name: '张杰' }
+        ],
+        name: '然后我们成了想成为的人',
+        id: 1868206871
       }
     ], // 播放列表
     rate: 50, // 播放按钮  环形进度
-    songUrl: 'http://m701.music.126.net/20230316160237/bd5fcaf319dba5f67500be3d68bda964/jdymusic/obj/wo3DlMOGwrbDjj7DisKw/4212514818/758a/87d3/2a91/c93f9324ee9c9c028bfb712192156b05.mp3', // 歌曲url
+    songUrl: 'http://m8.music.126.net/20230321231003/0d35e53c5219d2bfdc400742227e5471/ymusic/obj/w5zDlMODwrDDiGjCn8Ky/13398460788/ba7d/72bb/768d/623713f752392481e1f7750fb9eb66d0.mp3', // 歌曲url
     broadcast: true, // 播放/暂定切换
     playListIndex: 0, // 默认播放下标
     musicBroadcast: true, // 底部播放栏显示与隐藏

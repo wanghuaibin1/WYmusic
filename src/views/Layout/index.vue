@@ -129,7 +129,9 @@ export default {
     display: flex;
     justify-content: space-around;
     font-size: .3rem;
-
+    .van-tabbar{
+      z-index: 0;
+    }
     /deep/.van-tabbar--unfit {
       height: 100%;
       background-color: rgba(2555, 255, 2555, 0);
