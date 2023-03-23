@@ -154,7 +154,7 @@ export const songUrlAPI = params => request({
 })
 
 /**
- * 获取歌词
+ * 获取为逐字歌词 (可能有歌曲不包含逐字歌词)
  * @param {歌曲id} params
  * @returns
  */

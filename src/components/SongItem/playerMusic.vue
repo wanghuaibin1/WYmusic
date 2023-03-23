@@ -7,7 +7,8 @@
       </div>
       <div class="MusicItem">
         <p class="zz">{{ playList[playListIndex].name }}</p>
-        <p class="zz">{{ playList[playListIndex].ar[0].name }}</p>
+        <p class="zz">{{ curLyric }}</p>
+        <!-- <p class="zz">{{ playList[playListIndex].ar[0].name }}</p> -->
       </div>
     </div>
     <div class="MusicRigth">
@@ -21,8 +22,8 @@
     <audio ref="audio" :src='songUrl'></audio>
     <van-popup v-model="SongDetails" position="right" :style="{ height: '100%', width: '100%' }">
       <keep-alive>
-      <songDate :musicIt="playList[playListIndex]" />
-    </keep-alive>
+        <songDate :musicIt="playList[playListIndex]" :broa="broa" />
+      </keep-alive>
     </van-popup>
   </div>
 </template>
@@ -38,12 +39,11 @@ export default {
       gradientColor: {
         '0%': '#3fecff',
         '100%': '#6149f6'
-      },
-      lyric: '' // 歌曲歌词
+      }
     }
   },
   methods: {
-    ...mapMutations(['updataBroadcast', 'updateSongDetails']),
+    ...mapMutations(['updataBroadcast', 'updateSongDetails', 'updateCurLyric', 'updateLastLy']),
     broa () {
       // 底部播放按钮 判断是否在播放
       if (this.$refs.audio.paused) {
@@ -53,6 +53,23 @@ export default {
         this.$refs.audio.pause()
         this.updataBroadcast(true)
       }
+    },
+    showLyric () {
+      let curTime
+      // 监听播放audio进度, 切换歌词显示
+      this.$refs.audio.addEventListener('timeupdate', () => {
+        // 进度
+        curTime = Math.floor(this.$refs.audio.currentTime)
+        console.log(curTime)
+
+        // 避免空白出现
+        if (typeof this.lyric[curTime] !== 'undefined' && this.lyric[curTime] !== '\n') {
+          this.updateCurLyric(this.lyric[curTime])
+          this.updateLastLy(this.curLyric)
+        } else {
+          this.updateCurLyric(this.lastLy)
+        }
+      })
     }
   },
   components: {
@@ -61,11 +78,13 @@ export default {
   props: {},
   watch: {
     playListIndex () {
+      this.$store.dispatch('songlyric')
       this.$refs.audio.autoplay = true
       this.updataBroadcast(false)
       this.$store.dispatch('songUrlApi')
     },
     playList () {
+      this.$store.dispatch('songlyric')
       if (!this.broadcast) {
         this.$store.dispatch('songUrlApi')
         this.$refs.audio.autoplay = true
@@ -83,16 +102,24 @@ export default {
     }
   },
   computed: {
-    ...mapState(['playList', 'playListIndex', 'broadcast', 'rate', 'songUrl', 'SongDetails'])
+    ...mapState(['playList', 'playListIndex', 'broadcast', 'rate', 'songUrl', 'SongDetails', 'lyric', 'curLyric', 'lastLy'])
   },
   created () {
+    this.$store.dispatch('songlyric')
   },
-  mounted () { }
+  mounted () {
+    this.showLyric()
+  }
 }
 </script>
 <style lang="less" scoped>
+.van-popup--right {
+  overflow: hidden;
+}
+
 .playerMusic {
   width: 100%;
+  z-index: 1000;
   height: 70px;
   background-color: rgb(255, 255, 255);
   border-top: 1px solid red;
@@ -142,12 +169,13 @@ export default {
       p {
         width: 190px;
         margin: 0;
-      }
-
-      .zz {
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
+      }
+      p:nth-child(2) {
+        font-size: 10px;
+        color: #9e907f;
       }
     }
   }
@@ -160,4 +188,5 @@ export default {
     align-items: center;
     font-size: 25px;
   }
-}</style>
+}
+</style>

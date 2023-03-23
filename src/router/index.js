@@ -52,7 +52,6 @@ router.beforeEach((to, from, next) => {
     }
     next()
   } else {
-    console.log(2)
     if (to.path === '/login') {
       next()
     } else {
