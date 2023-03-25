@@ -10,24 +10,28 @@ const getDefaultState = () => {
     playList: [
       {
         al: {
-          picUrl: 'https://p1.music.126.net/MPhzdLs1oleS5Mh_iNuHLA==/109951166580198690.jpg'
+          picUrl: 'https://p1.music.126.net/wYuFxK1i_5jqs58xXQ-Jfg==/109951167350445378.jpg'
         },
         ar: [
-          { name: '梁博' }
+          { name: 'LBI利比' }
         ],
-        name: '男孩(Live)',
-        id: 467952048
+        dt: 173382,
+        name: '小城夏天',
+        id: 1934251776
       }
     ], // 播放列表
     rate: 50, // 播放进度
-    songUrl: 'http://m801.music.126.net/20230323161503/f510fc1959aa2d5d30ca8a97151337dc/jdymusic/obj/wo3DlMOGwrbDjj7DisKw/14096589288/f706/7c1a/9f8d/9b443c8a3ca914d1b0a37f9b622f62ba.mp3', // 歌曲url
+    songUrl: '',
     broadcast: true, // 播放/暂定切换
     playListIndex: 0, // 默认播放下标
     musicBroadcast: true, // 底部播放栏显示与隐藏
     SongDetails: false, // 歌曲详情
     lyric: {}, // 歌词枚举对象(需要在js拿到歌词写代码处理后, 按照格式保存到这个对象)
     curLyric: '', // 当前显示哪句歌词
-    lastLy: '' // 记录当前播放歌词
+    lastLy: '', // 记录当前播放歌词
+    currenTime: '', // 当前播放时间
+    songTime: '', // 歌曲歌词对应时间
+    songFore: '' // 歌曲时长
   }
 }
 export default new Vuex.Store({
@@ -76,6 +80,15 @@ export default new Vuex.Store({
     },
     updateLastLy (state, val) {
       state.lastLy = val
+    },
+    updateCurrenTime (state, val) {
+      state.currenTime = val
+    },
+    updateSongTime (state, val) {
+      state.songTime = val
+    },
+    updateSongFore (state, val) {
+      state.songFore = val
     }
   },
   actions: {
@@ -100,23 +113,35 @@ export default new Vuex.Store({
       const contentArr = lyricStr.split(/\[.+?\]/).slice(1) // 按照[]拆分歌词字符串, 返回一个数组(下标为0位置元素不要,后面的留下所以截取)
       // console.log(contentArr)
       const lyricObj = {} // 保存歌词的对象, key是秒, value是显示的歌词
+      const songSet = []
       timeArr.forEach((item, index) => {
         // 拆分[00:00.000]这个格式字符串, 把分钟数字取出, 转换成秒
         const ms = item.split(':')[0].split('')[2] * 60
         // 拆分[00:00.000]这个格式字符串, 把十位的秒拿出来, 如果是0, 去拿下一位数字, 否则直接用2位的值
         const ss = item.split(':')[1].split('.')[0].split('')[0] === '0' ? item.split(':')[1].split('.')[0].split('')[1] : item.split(':')[1].split('.')[0]
         // 秒数作为key, 对应歌词作为value
-        lyricObj[ms + Number(ss)] = contentArr[index]
+        lyricObj[ms + Number(ss)] = [contentArr[index], ms + Number(ss)]
+        songSet.push(ms + Number(ss))
+        // lyricObj[item] = ms + Number(ss)
+        // lyricObj.push({ms + Number(ss)})
       })
-      // 返回得到的歌词对象(可以打印看看)
-      console.log(lyricObj)
-      context.commit('updateCurLyric', lyricObj[0])
+      // 返回得到的歌词对象(可以打印看看
+      context.commit('updateCurLyric', lyricObj[0][0])
+      context.commit('updateSongTime', songSet)
       return lyricObj
     },
     async songlyric (context) {
       const { data: res } = await lyricAPI({ id: context.state.playList[context.state.playListIndex].id })
       context.commit('updatelyric', await this.dispatch('formatLyr', res.lrc.lyric))
-      // console.log(context.state.lyric)
+    },
+    // 格式化播放时长
+    formatDt (context, time) {
+      const dt = time / 1000
+      let m = parseInt(dt / 60)
+      let s = parseInt(dt % 60)
+      m = m >= 10 ? m : (m = '0' + m)
+      s = s >= 10 ? s : (s = '0' + s)
+      context.commit('updateSongFore', m + ':' + s)
     }
   },
   // 配置为 vuex 的插件

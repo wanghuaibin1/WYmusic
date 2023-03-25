@@ -1,41 +1,47 @@
 <template>
-     <!-- 歌单内歌曲 -->
-     <div class="sheetSong" ref="itemMusic" v-if="Object.keys(track).length !== 0">
-      <van-sticky  :offset-top="50"  >
-        <div class="broadcastSong">
-          <div class="songLift">
-            <span><van-icon size=".4rem" color="red" name="play-circle" /></span>
-            <span style="font-size: .3rem;">播放全部</span>
-            <span style="font-size: .2rem;">{{ "(" + track.length + ")" }}</span>
-          </div>
-          <div class="songRight">
-            <span><van-icon name="down" /></span>
-            <span><van-icon name="orders-o" /></span>
-          </div>
+  <!-- 歌单内歌曲 -->
+  <div class="sheetSong" ref="itemMusic" v-if="Object.keys(track).length !== 0">
+    <van-sticky :offset-top="50">
+      <div class="broadcastSong">
+        <div class="songLift">
+          <span><van-icon size=".4rem" color="red" name="play-circle" /></span>
+          <span style="font-size: .3rem;">播放全部</span>
+          <span style="font-size: .2rem;">{{ "(" + track.length + ")" }}</span>
         </div>
-      </van-sticky>
-      <div class="song">
-        <div class="songItem" v-for="obj, index in track" :key="obj.id">
-          <span class="songIndex">{{ index + 1 }}</span>
-          <div class="songName" @click="bofang(index)">
-            <p>{{ obj.name }}</p>
-            <p v-if="obj.ar.length === 0">{{ obj.ar[0].name + "—" + obj.al.name }} </p>
-            <p v-else>{{ author(obj.ar) + "—" + obj.al.name }}</p>
-          </div>
-          <div class="songIcon">
-            <span>
-              <svg class="icon" aria-hidden="true">
-                <use xlink:href="#icon-shipinbofang"></use>
-              </svg>
+        <div class="songRight">
+          <span><van-icon name="down" /></span>
+          <span><van-icon name="orders-o" /></span>
+        </div>
+      </div>
+    </van-sticky>
+    <div class="song">
+      <div class="songItem" v-for="obj, index in track" :key="obj.id">
+        <span class="songIndex">{{ index + 1 }}</span>
+        <div class="songName" @click="bofang(index)">
+          <p>{{ obj.name }}</p>
+          <p>
+            <span class="fee" v-if="obj.fee===1">
+              <van-icon class="iconfont" class-prefix='icon' name='vip' />
             </span>
-            <span>
-              <svg class="icon" aria-hidden="true">
-                <use xlink:href="#icon-androidgengduo"></use>
-              </svg></span>
-          </div>
+            <span v-for="item, i in obj.ar" :key="i">{{ item.name }}</span>
+          </p>
+          <!-- <p v-if="obj.ar.length === 0">{{ obj.ar[0].name + "—" + obj.al.name }} </p> -->
+          <!-- <p v-else>{{ author(obj.ar) + "—" + obj.al.name }}</p> -->
+        </div>
+        <div class="songIcon">
+          <span>
+            <svg class="icon" aria-hidden="true">
+              <use xlink:href="#icon-shipinbofang"></use>
+            </svg>
+          </span>
+          <span>
+            <svg class="icon" aria-hidden="true">
+              <use xlink:href="#icon-androidgengduo"></use>
+            </svg></span>
         </div>
       </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -70,14 +76,15 @@ export default {
   },
   watch: {},
   computed: {},
-  created () {},
-  mounted () {}
+  created () { },
+  mounted () { }
 }
 </script>
 <style lang="less" scoped>
-[v-cloak]{
+[v-cloak] {
   display: none;
 }
+
 .sheetSong {
   width: 100%;
   background-color: #ffffff;
@@ -107,7 +114,8 @@ export default {
   }
 
   .song {
-padding-bottom: 70px;
+    padding-bottom: 70px;
+
     .songItem {
       height: 50px;
       line-height: 50px;
@@ -141,6 +149,23 @@ padding-bottom: 70px;
 
       .songName p:nth-child(2) {
         color: #787878;
+        display: flex;
+        align-items: center;
+        justify-self: start;
+
+       .fee {
+        padding: 0 2px;
+        border-radius:  3.5px ;
+          line-height: 90%;
+          font-size: 10px;
+          text-align: center;
+          border: 1px solid #b2b2b2 ;
+          color: red;
+        }
+
+        span {
+          margin-left: 5px;
+        }
       }
 
       .songIcon span {

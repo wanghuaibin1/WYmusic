@@ -4,7 +4,7 @@
     <div class="detaolsTop">
       <div @click="updateSongDetails"><van-icon name="arrow-left" /></div>
       <div class="detalsSong">
-        <van-notice-bar :scrollable="musicIt.name.length >= 14 ? true : false" :text="musicIt.name" />
+        <van-notice-bar :scrollable="musicIt.name.length >= 18 ? true : false" :text="musicIt.name" />
         <span>{{ musicIt.ar[0].name }}</span>
       </div>
       <div style="font-size: 25px;">
@@ -21,7 +21,7 @@
         <div class="lrcContent">
           <!-- <van-icon name="like" color="red" /> -->
           <van-icon name="like-o" color="#fff" />
-          <p class="lrc">{{ curLyric }}</p>
+          <p class="lrc">{{ curLyric[0] }}</p>
           <!-- <van-icon badge="99+" class="iconfont" class-prefix='icon' name='androidgengduo' /> -->
           <van-icon name="chat-o" badge="99+" color="#fff" />
         </div>
@@ -29,18 +29,15 @@
 
     </div>
     <div v-show="show" class="songLyric" @click="show = !show">
-      <p v-for="item, i in lyric" :key="i">{{ item }}</p>
+        <p v-for="(item, i) in lyric" :key="i" :indeX=i :class="{ acter: (currenTime >= item[1]) }"
+          :style="{ 'font-size': (currenTime >= item[1] && currenTime < songTime[(Number((Object.keys(lyric)).indexOf(i))) + 1]) || curLyric[1] === item[1] ? '25px' : '' }">
+          {{ item[0] }}</p>
     </div>
-    <!-- <div class="detaolsContent">
-      <div>
-        <p class="lrc" v-for="item,i in lyric" :key="i">{{ item }}</p>
-      </div>
-    </div> -->
     <div class="detaolsSongFence">
       <div class="songItem">
         <span>xx:xx</span>
         <van-progress :percentage="rate" stroke-width="2" pivot-text="1" />
-        <span>xx:xx</span>
+        <span>{{ $store.state.songFore }}</span>
       </div>
       <div class="songControl">
         <i style="font-size: 25px;" class="iconfont icon-gl-repeatOnce2"></i>
@@ -77,13 +74,26 @@ export default {
 
   },
   components: {},
-  props: ['musicIt', 'broa'],
-  watch: {},
-  computed: {
-    ...mapState(['broadcast', 'curLyric', 'lyric', 'rate'])
+  props: ['musicIt', 'broa', 'zz'],
+  watch: {
+    currenTime () {
+      this.songTime.forEach((element, index) => {
+        if (element === this.curLyric[1]) {
+          document.querySelector('.songLyric').scrollTop = -200 + index * 40
+        }
+      })
+    },
+    zz () {
+      this.show = false
+    }
   },
-  created () { },
-  mounted () { }
+  computed: {
+    ...mapState(['broadcast', 'curLyric', 'lyric', 'rate', 'currenTime', 'songTime'])
+  },
+  created () {
+  },
+  mounted () {
+  }
 }
 </script>
 <style lang="less" scoped>
@@ -211,15 +221,29 @@ export default {
 }
 
 .songLyric {
-  width: 100%;
+  width: 102%;
   height: 70vh;
   overflow: overlay;
-padding: 20px 0;
+  padding: 20px 0;
+  position: relative;
+  scroll-behavior: smooth;
+  div {
+    position: absolute;
+    // top: 50%;
+    width: 100%;
+  }
+
   p {
     font-size: 15px;
     line-height: 40px;
-    color: rgb(125,125,132);
+    color: rgb(125, 125, 132);
     text-align: center;
+    transition: all .1s;
+
+  }
+
+  .acter {
+    color: #fff;
   }
 }
 
@@ -272,4 +296,5 @@ padding: 20px 0;
       }
     }
   }
-}</style>
+}
+</style>

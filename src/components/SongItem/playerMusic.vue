@@ -7,7 +7,7 @@
       </div>
       <div class="MusicItem">
         <p class="zz">{{ playList[playListIndex].name }}</p>
-        <p class="zz">{{ curLyric }}</p>
+        <p class="zz">{{currenTime===0?playList[playListIndex].ar[0].name:curLyric[0] }}</p>
         <!-- <p class="zz">{{ playList[playListIndex].ar[0].name }}</p> -->
       </div>
     </div>
@@ -20,9 +20,9 @@
       </svg>
     </div>
     <audio ref="audio" :src='songUrl'></audio>
-    <van-popup v-model="SongDetails" position="right" :style="{ height: '100%', width: '100%' }">
+    <van-popup v-model="SongDetails" position="right" @open="kai" @closed="bi" :style="{ height: '100%', width: '100%' }">
       <keep-alive>
-        <songDate :musicIt="playList[playListIndex]" :broa="broa" />
+        <songDate :musicIt="playList[playListIndex]" :broa="broa" :zz="zz" />
       </keep-alive>
     </van-popup>
   </div>
@@ -39,11 +39,12 @@ export default {
       gradientColor: {
         '0%': '#3fecff',
         '100%': '#6149f6'
-      }
+      },
+      zz: true
     }
   },
   methods: {
-    ...mapMutations(['updataBroadcast', 'updateSongDetails', 'updateCurLyric', 'updateLastLy']),
+    ...mapMutations(['updataBroadcast', 'updateCurrenTime', 'updateSongDetails', 'updateCurLyric', 'updateLastLy']),
     broa () {
       // 底部播放按钮 判断是否在播放
       if (this.$refs.audio.paused) {
@@ -57,19 +58,25 @@ export default {
     showLyric () {
       let curTime
       // 监听播放audio进度, 切换歌词显示
-      this.$refs.audio.addEventListener('timeupdate', () => {
+      this.$refs.audio.addEventListener('timeupdate', (e) => {
         // 进度
         curTime = Math.floor(this.$refs.audio.currentTime)
-        console.log(curTime)
-
+        this.updateCurrenTime(curTime)
         // 避免空白出现
-        if (typeof this.lyric[curTime] !== 'undefined' && this.lyric[curTime] !== '\n') {
+        // console.log(this.lyric[curTime])
+        if (typeof this.lyric[curTime] !== 'undefined' && this.lyric[curTime][0] !== String('\n')) {
           this.updateCurLyric(this.lyric[curTime])
           this.updateLastLy(this.curLyric)
         } else {
           this.updateCurLyric(this.lastLy)
         }
       })
+    },
+    kai () {
+      this.$store.dispatch('formatDt', this.playList[this.playListIndex].dt)
+    },
+    bi () {
+      this.zz = !this.zz
     }
   },
   components: {
@@ -102,10 +109,11 @@ export default {
     }
   },
   computed: {
-    ...mapState(['playList', 'playListIndex', 'broadcast', 'rate', 'songUrl', 'SongDetails', 'lyric', 'curLyric', 'lastLy'])
+    ...mapState(['playList', 'playListIndex', 'broadcast', 'rate', 'songUrl', 'SongDetails', 'lyric', 'curLyric', 'lastLy', 'currenTime'])
   },
   created () {
     this.$store.dispatch('songlyric')
+    this.$store.dispatch('songUrlApi')
   },
   mounted () {
     this.showLyric()
