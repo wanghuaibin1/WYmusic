@@ -29,9 +29,9 @@
 
     </div>
     <div v-show="show" class="songLyric" @click="show = !show">
-        <p v-for="(item, i) in lyric" :key="i" :indeX=i :class="{ acter: (currenTime >= item[1]) }"
-          :style="{ 'font-size': (currenTime >= item[1] && currenTime < songTime[(Number((Object.keys(lyric)).indexOf(i))) + 1]) || curLyric[1] === item[1] ? '25px' : '' }">
-          {{ item[0] }}</p>
+      <p v-for="(item, i) in lyric" :key="i" :indeX=i :class="{ acter: (currenTime >= item[1]) }"
+        :style="{ 'font-size': (currenTime >= item[1] && currenTime < songTime[(Number((Object.keys(lyric)).indexOf(i))) + 1]) || curLyric[1] === item[1] ? '25px' : '' }">
+        {{ item[0] }}</p>
     </div>
     <div class="detaolsSongFence">
       <div class="songItem">
@@ -40,14 +40,14 @@
         <span>{{ $store.state.songFore }}</span>
       </div>
       <div class="songControl">
-        <i style="font-size: 25px;" class="iconfont icon-gl-repeatOnce2"></i>
-        <i style="font-size: 25px;" class="iconfont icon-shangyishoushangyige"></i>
+        <i style="font-size: 25px;" class="iconfont" :class="bark" @click="playb"></i>
+        <i style="font-size: 25px;" class="iconfont icon-shangyishoushangyige" @click="previousSong"></i>
         <div class="detaolsBroadcast"
           :style="{ backgroundColor: (broadcast ? 'rgb(111,51,59)' : 'initial'), border: (broadcast ? 'none' : '') }"
           @click="broa">
           <van-icon size="30" :name="(!broadcast ? 'pause' : 'play')" />
         </div>
-        <i style="font-size: 25px;" class="iconfont icon-xiayigexiayishou"></i>
+        <i style="font-size: 25px;" class="iconfont icon-xiayigexiayishou" @click="nextSong"></i>
         <i style="font-size: 25px;" class="iconfont icon-bofangliebiao"></i>
       </div>
     </div>
@@ -66,18 +66,60 @@ export default {
         '0%': '#3fecff',
         '100%': '#6149f6'
       },
-      show: false
+      show: false,
+      bark: 'icon-liebiaoxunhuan'
     }
   },
   methods: {
-    ...mapMutations(['updateSongDetails'])
+    ...mapMutations(['updateSongDetails', 'updataplayListIndex', 'updatePlayback']),
+    playb () {
+      if (this.Playback !== 2) {
+        this.updatePlayback(this.Playback + 1)
+        switch (this.Playback) {
+          case 1: this.$toast({ message: '随机播放', position: 'top' })
+            this.bark = 'icon-suijibofang'; break
+          case 2: this.$toast({ message: '单曲循环', position: 'top' })
+            this.bark = 'icon-gl-repeatOnce2'
+        }
+      } else {
+        this.updatePlayback(0)
+        this.bark = 'icon-liebiaoxunhuan'
+        this.$toast({ message: '顺序播放', position: 'top' })
+      }
+    },
+    // 下一首
+    nextSong () {
+      switch (this.Playback) {
+        case 0:
+          if (this.playListIndex + 1 !== this.playList.length) {
+            this.updataplayListIndex(this.playListIndex + 1)
+          } else {
+            this.updataplayListIndex(0)
+          }
+          break
+        case 1: {
+          const randomNumber = Math.floor(Math.random() * this.playList.length)
+          this.updataplayListIndex(randomNumber)
+        } break
+        case 2: this.updataplayListIndex(this.playListIndex)
+      }
+    },
+    // 上一首
+    previousSong () {
+      if (this.playListIndex === 0) {
+        this.updataplayListIndex(this.playList.length - 1)
+      } else {
+        this.updataplayListIndex(this.playListIndex - 1)
+      }
+    }
 
   },
   components: {},
   props: ['musicIt', 'broa', 'zz'],
   watch: {
     currenTime () {
-      this.songTime.forEach((element, index) => {
+      // 先去重
+      [...new Set(this.songTime)].forEach((element, index) => {
         if (element === this.curLyric[1]) {
           document.querySelector('.songLyric').scrollTop = -200 + index * 40
         }
@@ -88,7 +130,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['broadcast', 'curLyric', 'lyric', 'rate', 'currenTime', 'songTime'])
+    ...mapState(['broadcast', 'curLyric', 'lyric', 'rate', 'currenTime', 'songTime', 'Playback', 'playListIndex', 'playList'])
   },
   created () {
   },
@@ -227,6 +269,7 @@ export default {
   padding: 20px 0;
   position: relative;
   scroll-behavior: smooth;
+
   div {
     position: absolute;
     // top: 50%;

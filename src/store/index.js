@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { songUrlAPI, lyricAPI } from '@/api'
+import { songUrlAPI, lyricAPI, songdateilAPI } from '@/api'
 import createPersistedState from 'vuex-persistedstate'
 Vue.use(Vuex)
 const getDefaultState = () => {
@@ -23,9 +23,11 @@ const getDefaultState = () => {
     rate: 50, // 播放进度
     songUrl: '',
     broadcast: true, // 播放/暂定切换
-    playListIndex: 0, // 默认播放下标
+    playListIndex: 0, // 播放下标
     musicBroadcast: true, // 底部播放栏显示与隐藏
-    SongDetails: false, // 歌曲详情
+    SongDetails: false, // 歌曲详情页显示
+    songdateil: '', // 单首歌曲详情
+    Playback: 0, // 播放状态 随机/单曲循环/顺序
     lyric: {}, // 歌词枚举对象(需要在js拿到歌词写代码处理后, 按照格式保存到这个对象)
     curLyric: '', // 当前显示哪句歌词
     lastLy: '', // 记录当前播放歌词
@@ -89,6 +91,9 @@ export default new Vuex.Store({
     },
     updateSongFore (state, val) {
       state.songFore = val
+    },
+    updatePlayback (state, val) {
+      state.Playback = val
     }
   },
   actions: {
@@ -99,6 +104,16 @@ export default new Vuex.Store({
     async songUrlApi (context) {
       const { data: res } = await songUrlAPI({ id: context.state.playList[context.state.playListIndex].id, level: 'standard' })
       context.commit('updataSongUrl', res.data[0].url)
+    },
+    // 歌曲详情 并播放
+    async songdateilApi (context, id) {
+      const { data: res } = await songdateilAPI({ ids: id })
+      this.dispatch('songlist', res.songs[0])
+      context.commit('updataplayListIndex', 1)
+    },
+    songlist (context, date) {
+      const song = context.state.playList.splice(1, 0, date)
+      return song
     },
     // 用户信息
     userItem (context) {
@@ -125,14 +140,14 @@ export default new Vuex.Store({
         // lyricObj[item] = ms + Number(ss)
         // lyricObj.push({ms + Number(ss)})
       })
-      // 返回得到的歌词对象(可以打印看看
-      context.commit('updateCurLyric', lyricObj[0][0])
       context.commit('updateSongTime', songSet)
       return lyricObj
     },
     async songlyric (context) {
       const { data: res } = await lyricAPI({ id: context.state.playList[context.state.playListIndex].id })
       context.commit('updatelyric', await this.dispatch('formatLyr', res.lrc.lyric))
+      context.commit('updateCurLyric', context.state.lyric[Object.keys(context.state.lyric)[0]])
+      context.commit('updateLastLy', context.state.lyric[Object.keys(context.state.lyric)[0]])
     },
     // 格式化播放时长
     formatDt (context, time) {

@@ -87,11 +87,13 @@ export default {
     playListIndex () {
       this.$store.dispatch('songlyric')
       this.$refs.audio.autoplay = true
+      this.kai()
       this.updataBroadcast(false)
       this.$store.dispatch('songUrlApi')
     },
     playList () {
       this.$store.dispatch('songlyric')
+      this.kai()
       if (!this.broadcast) {
         this.$store.dispatch('songUrlApi')
         this.$refs.audio.autoplay = true
@@ -101,6 +103,7 @@ export default {
       }
     },
     broadcast () {
+      this.kai()
       if (!this.broadcast) {
         this.$refs.audio.play()
       } else {

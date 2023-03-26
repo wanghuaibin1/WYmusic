@@ -1,8 +1,8 @@
 <template>
   <!-- 歌曲组件 -->
-    <van-cell center :title="name" :label="author + ' - ' + name">
+    <van-cell center :title="name" :label="author + ' - ' + name" >
       <template #right-icon>
-        <van-icon name="play-circle-o" size="0.6rem"/>
+        <van-icon name="play-circle-o" size="0.6rem" @click="$store.dispatch('songdateilApi',id)"/>
       </template>
     </van-cell>
   </template>

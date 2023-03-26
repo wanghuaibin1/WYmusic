@@ -28,6 +28,11 @@ export const searHotAPI = () => request({
   url: '/search/hot'
 })
 
+export const songdateilAPI = params => request({
+  url: '/song/detail',
+  params
+})
+
 /**
  *
  * @returns 首页轮播图
