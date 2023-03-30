@@ -7,8 +7,8 @@
         <van-notice-bar :scrollable="musicIt.name.length >= 18 ? true : false" :text="musicIt.name" />
         <span>{{ musicIt.ar[0].name }}</span>
       </div>
-      <div style="font-size: 25px;">
-        <i style="font-size: 25px;" class="iconfont icon-fenxiang"></i>
+      <div style="font-size: .5rem;">
+        <i style="font-size: .5rem;" class="iconfont icon-fenxiang"></i>
       </div>
     </div>
     <div v-show="!show" class="detaolsContent" @click="show = !show">
@@ -21,34 +21,35 @@
         <div class="lrcContent">
           <!-- <van-icon name="like" color="red" /> -->
           <van-icon name="like-o" color="#fff" />
-          <p class="lrc">{{ curLyric[0] }}</p>
+          <p class="lrc">{{currenTime===0?musicIt.ar[0].name:curLyric[0]  }}</p>
           <!-- <van-icon badge="99+" class="iconfont" class-prefix='icon' name='androidgengduo' /> -->
           <van-icon name="chat-o" badge="99+" color="#fff" />
         </div>
       </div>
-
     </div>
     <div v-show="show" class="songLyric" @click="show = !show">
       <p v-for="(item, i) in lyric" :key="i" :indeX=i :class="{ acter: (currenTime >= item[1]) }"
-        :style="{ 'font-size': (currenTime >= item[1] && currenTime < songTime[(Number((Object.keys(lyric)).indexOf(i))) + 1]) || curLyric[1] === item[1] ? '25px' : '' }">
+        :style="{ 'font-size': (currenTime >= item[1] && currenTime < songTime[(Number((Object.keys(lyric)).indexOf(i))) + 1]) || curLyric[1] === item[1] ? '.5rem' : '' }">
         {{ item[0] }}</p>
     </div>
     <div class="detaolsSongFence">
       <div class="songItem">
-        <span>xx:xx</span>
-        <van-progress :percentage="rate" stroke-width="2" pivot-text="1" />
+        <span>{{ item }}</span>
+        <!-- <van-progress :percentage="rate" stroke-width="2" pivot-text="1" /> -->
+        <van-slider v-model="value" :max="songTime[songTime.length-1]" @drag-end="end" @input="end"/>
+
         <span>{{ $store.state.songFore }}</span>
       </div>
       <div class="songControl">
-        <i style="font-size: 25px;" class="iconfont" :class="bark" @click="playb"></i>
-        <i style="font-size: 25px;" class="iconfont icon-shangyishoushangyige" @click="previousSong"></i>
+        <i style="font-size: .5rem;" class="iconfont" :class="bark" @click="playb"></i>
+        <i style="font-size: .5rem;" class="iconfont icon-shangyishoushangyige" @click="previousSong"></i>
         <div class="detaolsBroadcast"
           :style="{ backgroundColor: (broadcast ? 'rgb(111,51,59)' : 'initial'), border: (broadcast ? 'none' : '') }"
           @click="broa">
           <van-icon size="30" :name="(!broadcast ? 'pause' : 'play')" />
         </div>
-        <i style="font-size: 25px;" class="iconfont icon-xiayigexiayishou" @click="nextSong"></i>
-        <i style="font-size: 25px;" class="iconfont icon-bofangliebiao"></i>
+        <i style="font-size: .5rem;" class="iconfont icon-xiayigexiayishou" @click="nextSong"></i>
+        <i style="font-size: .5rem;" class="iconfont icon-bofangliebiao"></i>
       </div>
     </div>
   </div>
@@ -67,11 +68,13 @@ export default {
         '100%': '#6149f6'
       },
       show: false,
-      bark: 'icon-liebiaoxunhuan'
+      bark: 'icon-liebiaoxunhuan',
+      value: this.$store.state.currenTime,
+      item: '00:00'
     }
   },
   methods: {
-    ...mapMutations(['updateSongDetails', 'updataplayListIndex', 'updatePlayback']),
+    ...mapMutations(['updateSongDetails', 'updataplayListIndex', 'updatePlayback', 'updateRate', 'updateCurrenTime', 'updateCurLyric', 'updateLastLy']),
     playb () {
       if (this.Playback !== 2) {
         this.updatePlayback(this.Playback + 1)
@@ -111,8 +114,34 @@ export default {
       } else {
         this.updataplayListIndex(this.playListIndex - 1)
       }
+    },
+    q () {
+      [...new Set(this.songTime)].forEach((element, index) => {
+        if (element === this.curLyric[1]) {
+          document.querySelector('.songLyric').scrollTop = -200 + index * 40
+        }
+      })
+    },
+    end () {
+      this.updateCurrenTime(this.value)
+      let w = []
+      for (let index = 1; index <= this.currenTime; index++) {
+        w.push(index)
+      }
+      w = w.reverse()
+      w.some(item => {
+        if (this.lyric[item - 1] !== undefined) {
+          this.updateCurLyric(this.lyric[item - 1])
+          this.updateLastLy(this.curLyric)
+          return true
+        } else {
+          console.log(`Element at index ${item - 1} is undefined`)
+          return false
+        }
+      })
+      this.q()
+      this.$emit('numchange', this.value)
     }
-
   },
   components: {},
   props: ['musicIt', 'broa', 'zz'],
@@ -124,7 +153,20 @@ export default {
           document.querySelector('.songLyric').scrollTop = -200 + index * 40
         }
       })
+      this.value = this.currenTime
+      let m = parseInt(this.currenTime / 60)
+      let s = parseInt(this.currenTime % 60)
+      m = m >= 10 ? m : (m = '0' + m)
+      s = s >= 10 ? s : (s = '0' + s)
+      this.item = m + ':' + s
+      if (this.item === this.$store.state.songFore) {
+        this.nextSong()
+      }
     },
+    value () {
+      this.updateCurrenTime(this.value)
+    },
+
     zz () {
       this.show = false
     }
@@ -143,7 +185,7 @@ export default {
   position: absolute;
   width: 100%;
   height: 100%;
-  filter: blur(120px);
+  filter: blur(2.4rem);
   transform: scale(2);
   z-index: -1;
 }
@@ -151,21 +193,21 @@ export default {
 .detaolsTop {
   display: flex;
   justify-content: space-around;
-  font-size: 20px;
+  font-size: .4rem;
   align-items: center;
   color: #ffff;
 
   .detalsSong {
     width: 50%;
-    padding-top: 10px;
-    font-size: 15px;
+    padding-top: .2rem;
+    font-size: .3rem;
     display: flex;
     flex-direction: column;
     align-items: center;
 
     .van-notice-bar {
       width: 100%;
-      height: 24px;
+      height: .48rem;
       background-color: initial;
       padding: 0;
       color: #fff;
@@ -202,27 +244,27 @@ export default {
 
     div:nth-child(1) {
       width: 80%;
-      height: 200px;
+      height: 4rem;
       margin: auto;
       background-color: rgba(109, 104, 110, .6);
-      border-radius: 10px;
+      border-radius: .2rem;
     }
 
     div:nth-child(2) {
       width: 70%;
-      height: 220px;
+      height: 4.4rem;
       background-color: rgba(205, 203, 204, .8);
-      border-radius: 10px;
+      border-radius: .2rem;
     }
 
     div:nth-child(3) {
       width: 60%;
-      height: 250px;
+      height: 5rem;
 
       img {
         width: 100%;
         height: 100%;
-        border-radius: 10px;
+        border-radius: .2rem;
       }
     }
   }
@@ -232,7 +274,7 @@ export default {
     align-items: center;
     flex: 1;
     overflow: overlay;
-    padding: 0 10px;
+    padding: 0 .2rem;
     transition: all .2s;
     width: 100%;
 
@@ -243,7 +285,7 @@ export default {
 
       .van-icon,
       .icon {
-        font-size: 25px;
+        font-size: .5rem;
         position: relative;
         overflow: visible;
       }
@@ -254,8 +296,8 @@ export default {
     }
 
     .lrc {
-      font-size: 14px;
-      line-height: 35px;
+      font-size: .28rem;
+      line-height: .7rem;
       color: #fff;
       text-align: center;
     }
@@ -266,7 +308,7 @@ export default {
   width: 102%;
   height: 70vh;
   overflow: overlay;
-  padding: 20px 0;
+  padding: .4rem 0;
   position: relative;
   scroll-behavior: smooth;
 
@@ -277,8 +319,8 @@ export default {
   }
 
   p {
-    font-size: 15px;
-    line-height: 40px;
+    font-size: .3rem;
+    line-height: .8rem;
     color: rgb(125, 125, 132);
     text-align: center;
     transition: all .1s;
@@ -300,20 +342,14 @@ export default {
     justify-content: space-around;
     align-items: center;
     width: 100%;
-    padding: 0 10px;
+    padding: 0 .2rem;
 
-    .van-progress {
+    /deep/.van-slider {
       width: 70%;
 
-      /deep/.van-progress__pivot {
-        color: #1989fa;
-        font-weight: 100;
-        width: 10px;
-        overflow: hidden;
-        height: 10px;
-        border-radius: 50px;
-        line-height: 0;
-        min-width: 0;
+      .van-slider__button {
+        width: .3rem;
+        height: .3rem;
       }
     }
   }
@@ -323,16 +359,16 @@ export default {
     width: 100%;
     justify-content: space-around;
     align-items: center;
-    line-height: 110px;
+    line-height: 2.2rem;
     color: #ffffff;
 
     .detaolsBroadcast {
       display: flex;
       align-items: center;
-      border: 1px solid #ffffff;
-      width: 50px;
-      height: 50px;
-      border-radius: 50px;
+      border: .02rem solid #ffffff;
+      width: 1rem;
+      height: 1rem;
+      border-radius: 1rem;
 
       .van-icon {
         margin: auto;

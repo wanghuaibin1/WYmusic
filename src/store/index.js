@@ -20,7 +20,7 @@ const getDefaultState = () => {
         id: 1934251776
       }
     ], // 播放列表
-    rate: 50, // 播放进度
+    rate: 0, // 播放进度
     songUrl: '',
     broadcast: true, // 播放/暂定切换
     playListIndex: 0, // 播放下标
@@ -67,6 +67,9 @@ export default new Vuex.Store({
     // 改变当前播放音乐url
     updataSongUrl (state, val) {
       state.songUrl = val
+    },
+    updateRate (state, val) {
+      state.rate = val
     },
     updataMusicBroadcast (state, val) {
       state.musicBroadcast = val

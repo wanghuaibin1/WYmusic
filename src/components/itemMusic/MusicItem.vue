@@ -223,7 +223,7 @@ export default {
     window.addEventListener('scroll', this.handleScroll) // 监听页面滚动
   },
   beforeDestroy () {
-    window.removeEventListener('scroll', this.handleScroll)
+    window.NaNpxoveEventListener('scroll', this.handleScroll)
   },
   components: {
     Music

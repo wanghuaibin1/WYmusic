@@ -12,7 +12,7 @@
       </div>
     </div>
     <div class="MusicRigth">
-      <van-circle v-model="currentRate" size="30px" :rate="rate" :color="gradientColor">
+      <van-circle v-model="currentRate" size=".6rem" :rate="rate" :color="gradientColor">
         <van-icon size="20" :name="(!broadcast ? 'pause' : 'play')" @click="broa" />
       </van-circle>
       <svg class="icon" aria-hidden="true">
@@ -22,7 +22,7 @@
     <audio ref="audio" :src='songUrl'></audio>
     <van-popup v-model="SongDetails" position="right" @open="kai" @closed="bi" :style="{ height: '100%', width: '100%' }">
       <keep-alive>
-        <songDate :musicIt="playList[playListIndex]" :broa="broa" :zz="zz" />
+        <songDate :musicIt="playList[playListIndex]" :broa="broa" :zz="zz" @numchange="getNewCount"/>
       </keep-alive>
     </van-popup>
   </div>
@@ -44,7 +44,7 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(['updataBroadcast', 'updateCurrenTime', 'updateSongDetails', 'updateCurLyric', 'updateLastLy']),
+    ...mapMutations(['updataBroadcast', 'updateCurrenTime', 'updateSongDetails', 'updateCurLyric', 'updateLastLy', 'updateRate']),
     broa () {
       // 底部播放按钮 判断是否在播放
       if (this.$refs.audio.paused) {
@@ -59,6 +59,7 @@ export default {
       let curTime
       // 监听播放audio进度, 切换歌词显示
       this.$refs.audio.addEventListener('timeupdate', (e) => {
+        this.updateRate(this.currenTime / this.songTime[this.songTime.length - 1] * 100)
         // 进度
         curTime = Math.floor(this.$refs.audio.currentTime)
         this.updateCurrenTime(curTime)
@@ -77,6 +78,9 @@ export default {
     },
     bi () {
       this.zz = !this.zz
+    },
+    getNewCount (val) {
+      this.$refs.audio.currentTime = val
     }
   },
   components: {
@@ -112,7 +116,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['playList', 'playListIndex', 'broadcast', 'rate', 'songUrl', 'SongDetails', 'lyric', 'curLyric', 'lastLy', 'currenTime'])
+    ...mapState(['playList', 'playListIndex', 'broadcast', 'rate', 'songUrl', 'SongDetails', 'lyric', 'curLyric', 'lastLy', 'currenTime', 'songTime'])
   },
   created () {
     this.$store.dispatch('songlyric')
@@ -131,9 +135,9 @@ export default {
 .playerMusic {
   width: 100%;
   z-index: 1000;
-  height: 70px;
+  height: 1.4rem;
   background-color: rgb(255, 255, 255);
-  border-top: 1px solid red;
+  border-top: .02rem solid red;
   position: fixed;
   bottom: 0;
   display: flex;
@@ -148,19 +152,19 @@ export default {
     align-items: center;
 
     .MusicImg {
-      width: 50px;
-      height: 50px;
-      border-radius: 50px;
+      width: 1rem;
+      height: 1rem;
+      border-radius: 1rem;
       background-color: black;
-      padding: 10px;
-      margin-left: 10px;
+      padding: .2rem;
+      margin-left: .2rem;
       animation: myfirst 4s linear infinite;
 
       // animation-play-state:paused
       img {
         width: 100%;
         height: 100%;
-        border-radius: 50px;
+        border-radius: 1rem;
       }
     }
 
@@ -175,17 +179,17 @@ export default {
     }
 
     .MusicItem {
-      margin-left: 10px;
+      margin-left: .2rem;
 
       p {
-        width: 190px;
+        width: 3.8rem;
         margin: 0;
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
       }
       p:nth-child(2) {
-        font-size: 10px;
+        font-size: .2rem;
         color: #9e907f;
       }
     }
@@ -197,7 +201,7 @@ export default {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    font-size: 25px;
+    font-size: .5rem;
   }
 }
 </style>

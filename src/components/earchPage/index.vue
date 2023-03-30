@@ -170,6 +170,7 @@ export default {
   overflow: auto;
   width: 100%;
   height: 92vh;
+  padding-bottom:1.4rem ;
 }
 .van-search__content--round {
   background-color: rgb(54 125 125 / 20%);
@@ -215,10 +216,6 @@ export default {
   border-radius: 10px;
   transition: 0.4s ease-in-out;
 }
-.loader:hover{
-  background:red
-}
-
 .currentplaying {
   display: flex;
   margin: 1em;

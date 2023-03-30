@@ -1,5 +1,5 @@
 <template>
-  <!-- 歌单组件 -->
+  <!-- 首页推荐歌单组件 -->
   <router-link :to="{path:'/itemmusic',query:{id}}" class="songImg">
     <div  >
           <van-image width="100%" height="2.3rem" fit="cover" :src="picUrl" lazy-load>

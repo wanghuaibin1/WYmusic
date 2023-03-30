@@ -2,7 +2,7 @@
   <!-- 歌曲组件 -->
     <van-cell center :title="name" :label="author + ' - ' + name" >
       <template #right-icon>
-        <van-icon name="play-circle-o" size="0.6rem" @click="$store.dispatch('songdateilApi',id)"/>
+        <van-icon name="play-circle-o" size="30px" @click="$store.dispatch('songdateilApi',id)"/>
       </template>
     </van-cell>
   </template>
@@ -21,6 +21,9 @@ export default {
   <style scoped>
   /* 给单元格设置底部边框 */
   .van-cell {
-    border-bottom: 1px solid lightgray;
+    border-bottom: .02rem solid lightgray;
+  }
+  .van-cell{
+    line-height: 25px;
   }
   </style>
