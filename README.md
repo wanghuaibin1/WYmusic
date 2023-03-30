@@ -1,4 +1,6 @@
 # wangyi
+##基于网易本地api使用请先配置本地网易云服务
+## https://github.com/Binaryify/NeteaseCloudMusicApi   下载地址
 
 ## Project setup
 ```
